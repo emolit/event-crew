@@ -2,7 +2,7 @@ import { siteConfig } from "@/data/site";
 
 export default function Footer() {
   return (
-    <footer className="border-t border-black/10 bg-[color:var(--foreground)] text-[color:var(--background)]">
+    <footer className="scroll-mt-24 border-t border-black/10 bg-[color:var(--foreground)] text-[color:var(--background)]" id="contacts">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1fr_2fr] lg:px-12">
         <div>
           <p className="text-2xl font-black tracking-[-0.05em]">{siteConfig.brand}</p>

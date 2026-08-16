@@ -18,6 +18,7 @@ describe("Footer", () => {
   it("renders all configured contact channels and the approved copyright", () => {
     render(<Footer />);
 
+    expect(screen.getByRole("contentinfo")).toHaveAttribute("id", "contacts");
     for (const contact of Object.values(siteConfig.contacts)) {
       expect(screen.getByRole("link", { name: new RegExp(contact.label, "i") })).toHaveAttribute("href", contact.href);
     }

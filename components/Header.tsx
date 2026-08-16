@@ -97,7 +97,7 @@ export default function Header() {
 
       {isMenuOpen && (
         <div aria-label="Мобильная навигация" aria-modal="true" className="fixed inset-x-0 top-20 border-b border-black/10 bg-[color:var(--background)] px-5 py-6 shadow-xl lg:hidden" id="mobile-navigation" onKeyDown={trapFocus} ref={dialogRef} role="dialog">
-          <button className="ml-auto grid size-11 place-items-center rounded-sm border border-black/15 text-sm font-black uppercase tracking-[0.08em] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" onClick={() => closeMenu(true)} type="button">
+          <button className="ml-auto inline-flex min-h-11 items-center justify-center rounded-sm border border-black/15 px-4 text-sm font-black uppercase tracking-[0.08em] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" onClick={() => closeMenu(true)} type="button">
             Закрыть меню
           </button>
           <nav aria-label="Мобильная навигация">
