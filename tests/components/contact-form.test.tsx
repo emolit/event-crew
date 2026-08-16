@@ -47,6 +47,16 @@ describe("ContactForm", () => {
     expect(honeypot).toHaveClass("sr-only");
   });
 
+  it("marks name and phone as required and explains the visible asterisk", () => {
+    render(<ContactForm />);
+
+    expect(screen.getByText("* — обязательные поля")).toBeVisible();
+    for (const label of ["Имя", "Телефон"]) {
+      expect(screen.getByLabelText(label)).toBeRequired();
+      expect(screen.getByLabelText(label)).toHaveAttribute("aria-required", "true");
+    }
+  });
+
   it("shows linked required-field errors without submitting empty data", async () => {
     const user = userEvent.setup();
     const fetchMock = vi.fn();
@@ -63,6 +73,9 @@ describe("ContactForm", () => {
     expect(phoneInput).toHaveAttribute("aria-describedby", "phone-error");
     expect(screen.getByText("Укажите имя")).toHaveAttribute("id", "name-error");
     expect(screen.getByText("Укажите телефон")).toHaveAttribute("id", "phone-error");
+    expect(nameInput).toHaveFocus();
+    expect(screen.getByRole("alert")).toHaveAttribute("aria-live", "assertive");
+    expect(screen.getByRole("alert")).toHaveTextContent("Проверьте обязательные поля");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 

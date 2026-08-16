@@ -1,4 +1,5 @@
 import { contactSchema } from "@/lib/contact-schema";
+import { services } from "@/data/services";
 
 const valid = {
   name: "Иван",
@@ -21,6 +22,38 @@ it("rejects an empty name", () => {
 
 it("rejects a phone with fewer than ten digits", () => {
   expect(contactSchema.safeParse({ ...valid, phone: "123" }).success).toBe(false);
+});
+
+it("accepts a phone containing exactly fifteen digits", () => {
+  expect(contactSchema.safeParse({ ...valid, phone: "+123 456 789 012 345" }).success).toBe(true);
+});
+
+it("rejects a phone containing sixteen digits", () => {
+  expect(contactSchema.safeParse({ ...valid, phone: "+123 456 789 012 345 6" }).success).toBe(false);
+});
+
+it("rejects phone characters outside digits, spaces, plus, dash, parentheses, and periods", () => {
+  expect(contactSchema.safeParse({ ...valid, phone: "+7 (999) 123-45-67 ext" }).success).toBe(false);
+});
+
+it("accepts an empty event date or a real ISO calendar date", () => {
+  expect(contactSchema.safeParse({ ...valid, eventDate: "" }).success).toBe(true);
+  expect(contactSchema.safeParse({ ...valid, eventDate: "2028-02-29" }).success).toBe(true);
+});
+
+it.each(["2026-02-29", "2026-13-01", "2026-9-25", "2026-09-250"])(
+  "rejects malformed or impossible event date %s",
+  (eventDate) => {
+    expect(contactSchema.safeParse({ ...valid, eventDate }).success).toBe(false);
+  },
+);
+
+it("accepts only configured service names, Другое, or an empty staff type", () => {
+  for (const staffType of ["", "Другое", ...services.map((service) => service.name)]) {
+    expect(contactSchema.safeParse({ ...valid, staffType }).success).toBe(true);
+  }
+
+  expect(contactSchema.safeParse({ ...valid, staffType: "Неизвестная услуга" }).success).toBe(false);
 });
 
 it("rejects a filled honeypot", () => {

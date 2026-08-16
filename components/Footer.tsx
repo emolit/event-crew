@@ -1,13 +1,28 @@
+import Image from "next/image";
 import { siteConfig } from "@/data/site";
 
 export default function Footer() {
   return (
     <footer className="scroll-mt-24 border-t border-black/10 bg-[color:var(--foreground)] text-[color:var(--background)]" id="contacts">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1fr_2fr] lg:px-12">
-        <div>
-          <p className="text-2xl font-black tracking-[-0.05em]">{siteConfig.brand}</p>
-          <p className="mt-2 text-sm font-bold uppercase tracking-[0.12em] text-[color:var(--accent)]">{siteConfig.tagline}</p>
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,0.8fr)_minmax(0,1.5fr)] lg:px-12">
+        <div className="flex items-start gap-4">
+          <Image alt="Логотип EVENT CREW" height={72} src={siteConfig.logo} width={72} />
+          <div>
+            <p className="text-2xl font-black tracking-[-0.05em]">{siteConfig.brand}</p>
+            <p className="mt-2 text-sm font-bold uppercase tracking-[0.12em] text-[color:var(--accent)]">{siteConfig.tagline}</p>
+          </div>
         </div>
+        <nav aria-label="Навигация в подвале">
+          <ul className="grid gap-1">
+            {siteConfig.nav.map((item) => (
+              <li key={item.href}>
+                <a className="inline-flex min-h-11 items-center rounded-sm text-sm font-bold uppercase tracking-[0.08em] transition-colors hover:text-[color:var(--accent)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" href={item.href}>
+                  {item.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
         <address className="grid gap-4 not-italic sm:grid-cols-2">
           {Object.values(siteConfig.contacts).map((contact) => {
             const isMessenger = contact.label === "Telegram" || contact.label === "WhatsApp";

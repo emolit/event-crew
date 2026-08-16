@@ -4,7 +4,7 @@ import { advantages } from "@/data/advantages";
 
 export default function Advantages() {
   return (
-    <section aria-labelledby="advantages-heading" className="bg-[color:var(--foreground)] text-[color:var(--background)]" id="advantages">
+    <section aria-labelledby="advantages-heading" className="bg-[color:var(--foreground)] text-[color:var(--background)] [--muted:var(--muted-on-dark)]" id="advantages">
       <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <Reveal>
           <div id="advantages-heading">

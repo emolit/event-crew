@@ -19,4 +19,46 @@ describe("landing content contracts", () => {
     const paths = [siteConfig.heroImage, ...services.map((service) => service.image), ...projects.map((project) => project.image)];
     expect(paths.every((path) => path.startsWith("/images/"))).toBe(true);
   });
+
+  it("keeps the exact stable service ids and replacement paths", () => {
+    expect(services.map((service) => service.id)).toEqual([
+      "hostess",
+      "promoters",
+      "helpers",
+      "waiters",
+      "coordinators",
+      "cloakroom",
+      "registrars",
+      "animators",
+    ]);
+    expect(services.map((service) => service.image)).toEqual([
+      "/images/services/service-hostess.webp",
+      "/images/services/service-promoters.webp",
+      "/images/services/service-helpers.webp",
+      "/images/services/service-waiters.webp",
+      "/images/services/service-coordinators.webp",
+      "/images/services/service-cloakroom.webp",
+      "/images/services/service-registrars.webp",
+      "/images/services/service-animators.webp",
+    ]);
+  });
+
+  it("keeps project-01 through project-06 on their exact replacement paths", () => {
+    expect(projects.map((project) => project.id)).toEqual([
+      "project-01",
+      "project-02",
+      "project-03",
+      "project-04",
+      "project-05",
+      "project-06",
+    ]);
+    expect(projects.map((project) => project.image)).toEqual([
+      "/images/projects/project-01.webp",
+      "/images/projects/project-02.webp",
+      "/images/projects/project-03.webp",
+      "/images/projects/project-04.webp",
+      "/images/projects/project-05.webp",
+      "/images/projects/project-06.webp",
+    ]);
+  });
 });

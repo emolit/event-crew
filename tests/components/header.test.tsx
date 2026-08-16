@@ -1,12 +1,26 @@
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import Header from "@/components/Header";
 import { siteConfig } from "@/data/site";
 
 describe("Header", () => {
+  it("keeps the compact menu through laptop widths where full navigation would clip", () => {
+    render(<Header />);
+
+    expect(screen.getByRole("navigation", { name: /основная навигация/i })).toHaveClass("xl:flex");
+    expect(screen.getByRole("link", { name: /оставить заявку/i })).toHaveClass("xl:inline-flex");
+    expect(screen.getByRole("button", { name: /открыть меню/i })).toHaveClass("xl:hidden");
+  });
+
   it("renders configured navigation and opens a dismissible mobile menu", async () => {
     const user = userEvent.setup();
-    render(<Header />);
+    render(
+      <>
+        <Header />
+        <main data-testid="page-main" />
+        <footer data-testid="page-footer" />
+      </>,
+    );
 
     const navigation = screen.getByRole("navigation", { name: /основная навигация/i });
     for (const item of siteConfig.nav) {
@@ -23,6 +37,9 @@ describe("Header", () => {
     expect(document.body).toHaveStyle({ overflow: "hidden" });
 
     const mobileMenu = screen.getByRole("dialog", { name: /мобильная навигация/i });
+    expect(mobileMenu).toHaveClass("fixed", "inset-0", "overflow-y-auto");
+    expect(screen.getByTestId("page-main")).toHaveAttribute("inert");
+    expect(screen.getByTestId("page-footer")).toHaveAttribute("inert");
     const closeButton = within(mobileMenu).getByRole("button", { name: /закрыть меню/i });
     expect(closeButton).toHaveFocus();
 
@@ -32,9 +49,13 @@ describe("Header", () => {
     expect(closeButton).toHaveFocus();
 
     await user.keyboard("{Escape}");
-    expect(screen.queryByRole("dialog", { name: /мобильная навигация/i })).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: /мобильная навигация/i })).not.toBeInTheDocument();
+    });
     expect(toggle).toHaveFocus();
     expect(document.body).not.toHaveStyle({ overflow: "hidden" });
+    expect(screen.getByTestId("page-main")).not.toHaveAttribute("inert");
+    expect(screen.getByTestId("page-footer")).not.toHaveAttribute("inert");
   });
 
   it("closes the mobile menu when navigation is selected", async () => {
@@ -44,7 +65,27 @@ describe("Header", () => {
     await user.click(screen.getByRole("button", { name: /открыть меню/i }));
     await user.click(within(screen.getByRole("dialog", { name: /мобильная навигация/i })).getByRole("link", { name: "Услуги" }));
 
-    expect(screen.queryByRole("dialog", { name: /мобильная навигация/i })).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.queryByRole("dialog", { name: /мобильная навигация/i })).not.toBeInTheDocument();
+    });
     expect(screen.getByRole("button", { name: /открыть меню/i })).toHaveFocus();
+  });
+
+  it("restores background inert state when the header unmounts", async () => {
+    const user = userEvent.setup();
+    const pageMain = document.createElement("main");
+    const pageFooter = document.createElement("footer");
+    document.body.append(pageMain, pageFooter);
+    const { unmount } = render(<Header />);
+
+    await user.click(screen.getByRole("button", { name: /открыть меню/i }));
+    expect(pageMain).toHaveAttribute("inert");
+    expect(pageFooter).toHaveAttribute("inert");
+
+    unmount();
+    expect(pageMain).not.toHaveAttribute("inert");
+    expect(pageFooter).not.toHaveAttribute("inert");
+    pageMain.remove();
+    pageFooter.remove();
   });
 });

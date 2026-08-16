@@ -61,6 +61,7 @@ it("sends the formatted message through the Telegram API", async () => {
   expect(fetcher).toHaveBeenCalledWith("https://api.telegram.org/botTOKEN/sendMessage", {
     method: "POST",
     headers: { "content-type": "application/json" },
+    signal: expect.any(AbortSignal),
     body: JSON.stringify({
       chat_id: "CHAT",
       parse_mode: "HTML",
@@ -97,4 +98,39 @@ it("normalizes fetch failures without exposing the request URL", async () => {
   await expect(
     sendTelegramMessage(payload, { botToken: "TOKEN", chatId: "CHAT" }, fetcher),
   ).rejects.toThrow(/^TELEGRAM_DELIVERY_FAILED$/);
+});
+
+it("aborts Telegram delivery after ten seconds and normalizes the timeout", async () => {
+  vi.useFakeTimers();
+  let observedSignal: AbortSignal | undefined;
+  const fetcher = vi.fn((_input: RequestInfo | URL, init?: RequestInit) => {
+    observedSignal = init?.signal ?? undefined;
+
+    if (!observedSignal) {
+      return Promise.reject(new Error("MISSING_ABORT_SIGNAL"));
+    }
+
+    return new Promise<Response>((_resolve, reject) => {
+      observedSignal?.addEventListener(
+        "abort",
+        () => reject(new DOMException("The request was aborted", "AbortError")),
+        { once: true },
+      );
+    });
+  }) as typeof fetch;
+
+  try {
+    const delivery = sendTelegramMessage(
+      payload,
+      { botToken: "TOKEN", chatId: "CHAT" },
+      fetcher,
+    );
+    const rejection = expect(delivery).rejects.toThrow(/^TELEGRAM_DELIVERY_FAILED$/);
+
+    await vi.advanceTimersByTimeAsync(10_000);
+    await rejection;
+    expect(observedSignal?.aborted).toBe(true);
+  } finally {
+    vi.useRealTimers();
+  }
 });

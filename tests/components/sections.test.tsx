@@ -22,6 +22,7 @@ describe("data-driven content sections", () => {
       const image = within(section).getByRole("img", { name: service.alt });
       expect(image).toHaveAttribute("alt", service.alt);
       expect(image).toHaveAttribute("sizes", "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw");
+      expect(image.parentElement).toHaveClass("aspect-[2/3]");
     }
   });
 
@@ -74,7 +75,10 @@ describe("data-driven content sections", () => {
 
     for (const step of processSteps) {
       const stepCard = within(section).getByRole("article", { name: new RegExp(`${step.number}.*${step.title}`, "i") });
-      expect(within(stepCard).getByText(step.number)).toBeInTheDocument();
+      expect(within(stepCard).getByText(step.number)).toHaveClass(
+        "bg-[color:var(--accent)]",
+        "text-[color:var(--foreground)]",
+      );
       expect(within(stepCard).getByRole("heading", { name: step.title, level: 3 })).toBeInTheDocument();
     }
 

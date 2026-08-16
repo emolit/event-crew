@@ -1,16 +1,17 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
 import { siteConfig } from "@/data/site";
 
 describe("Hero", () => {
-  it("provides the page's only top-level heading, image alt text, and contact CTA", () => {
+  it("provides the exact Hero copy, sole top-level heading, image alt, and contact CTA", () => {
     render(<Hero />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("Персонал для вашего мероприятия");
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/^Персонал для вашего мероприятия$/);
+    expect(screen.getByText("Подберем надежный персонал для мероприятий в Москве")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /команда event crew на мероприятии/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "#contact");
+    expect(screen.getByRole("link", { name: "Рассчитать стоимость" })).toHaveAttribute("href", "#contact");
   });
 });
 
@@ -19,6 +20,17 @@ describe("Footer", () => {
     render(<Footer />);
 
     expect(screen.getByRole("contentinfo")).toHaveAttribute("id", "contacts");
+    expect(screen.getByRole("img", { name: "Логотип EVENT CREW" })).toHaveAttribute(
+      "src",
+      expect.stringContaining(encodeURIComponent(siteConfig.logo)),
+    );
+    const footerNavigation = screen.getByRole("navigation", { name: "Навигация в подвале" });
+    for (const item of siteConfig.nav) {
+      expect(within(footerNavigation).getByRole("link", { name: item.label })).toHaveAttribute(
+        "href",
+        item.href,
+      );
+    }
     for (const contact of Object.values(siteConfig.contacts)) {
       expect(screen.getByRole("link", { name: new RegExp(contact.label, "i") })).toHaveAttribute("href", contact.href);
     }

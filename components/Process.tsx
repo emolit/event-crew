@@ -16,7 +16,7 @@ export default function Process() {
             <li className="relative lg:border-l lg:border-black/15 lg:pl-6 first:lg:border-l-0 first:lg:pl-0" key={step.number}>
               <Reveal delay={Math.min(index * 0.08, 0.24)}>
                 <article aria-label={`${step.number} ${step.title}`} className="min-h-44 border border-black/10 bg-[color:var(--background)] p-6 lg:min-h-64 lg:border-0 lg:bg-transparent lg:p-0">
-                  <span className="text-4xl font-black tracking-[-0.06em] text-[color:var(--accent)]">{step.number}</span>
+                  <span className="inline-flex min-w-12 items-center justify-center rounded-full bg-[color:var(--accent)] px-3 py-1 text-2xl font-black tracking-[-0.06em] text-[color:var(--foreground)]">{step.number}</span>
                   <h3 className="mt-10 text-2xl font-black uppercase tracking-[-0.05em]">{step.title}</h3>
                   <p className="mt-4 leading-relaxed text-[color:var(--muted)]">{step.description}</p>
                 </article>

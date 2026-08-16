@@ -38,35 +38,32 @@ export async function sendTelegramMessage(
   env: TelegramEnv,
   fetcher: typeof fetch = fetch,
 ): Promise<void> {
-  let response: Response;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
 
   try {
-    response = await fetcher(`https://api.telegram.org/bot${env.botToken}/sendMessage`, {
+    const response = await fetcher(`https://api.telegram.org/bot${env.botToken}/sendMessage`, {
       method: "POST",
       headers: { "content-type": "application/json" },
+      signal: controller.signal,
       body: JSON.stringify({
         chat_id: env.chatId,
         parse_mode: "HTML",
         text: formatTelegramMessage(payload),
       }),
     });
+
+    if (!response.ok) {
+      throw new Error("TELEGRAM_DELIVERY_FAILED");
+    }
+
+    const result = (await response.json()) as { ok?: boolean };
+    if (result.ok !== true) {
+      throw new Error("TELEGRAM_DELIVERY_FAILED");
+    }
   } catch {
     throw new Error("TELEGRAM_DELIVERY_FAILED");
-  }
-
-  if (!response.ok) {
-    throw new Error("TELEGRAM_DELIVERY_FAILED");
-  }
-
-  let result: { ok?: boolean };
-
-  try {
-    result = (await response.json()) as { ok?: boolean };
-  } catch {
-    throw new Error("TELEGRAM_DELIVERY_FAILED");
-  }
-
-  if (result.ok !== true) {
-    throw new Error("TELEGRAM_DELIVERY_FAILED");
+  } finally {
+    clearTimeout(timeout);
   }
 }

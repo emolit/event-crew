@@ -4,7 +4,8 @@
   --background: #f4f1e9;
   --foreground: #11110f;
   --accent: #f5bd00;
-  --muted: #73716b;
+  --muted: #686761;
+  --muted-on-dark: #aaa79f;
 }
 
 html {

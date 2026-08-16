@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 import { services } from "@/data/services";
 import { contactSchema } from "@/lib/contact-schema";
 
@@ -28,9 +28,11 @@ const successCopy = "Спасибо! Заявка отправлена. Скор
 const failureCopy = "Не удалось отправить заявку. Попробуйте еще раз.";
 
 export default function ContactForm() {
+  const formRef = useRef<HTMLFormElement>(null);
   const [values, setValues] = useState<FormValues>(emptyValues);
   const [errors, setErrors] = useState<Partial<Record<FormField, string>>>({});
   const [status, setStatus] = useState<FormStatus>("idle");
+  const [validationSummary, setValidationSummary] = useState("");
 
   function updateField(field: FormField, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
@@ -44,6 +46,7 @@ export default function ContactForm() {
       return remainingErrors;
     });
     setStatus("idle");
+    setValidationSummary("");
   }
 
   function validate(): boolean {
@@ -51,15 +54,20 @@ export default function ContactForm() {
 
     if (parsed.success) {
       setErrors({});
+      setValidationSummary("");
       return true;
     }
 
     const nextErrors: Partial<Record<FormField, string>> = {};
+    const invalidFields: FormField[] = [];
     for (const issue of parsed.error.issues) {
       const field = issue.path[0];
 
       if (typeof field === "string" && field in emptyValues) {
         const formField = field as FormField;
+        if (!invalidFields.includes(formField)) {
+          invalidFields.push(formField);
+        }
         nextErrors[formField] = formField === "phone" && values.phone.trim() === ""
           ? "Укажите телефон"
           : errorMessages[formField] ?? "Проверьте значение поля";
@@ -67,6 +75,18 @@ export default function ContactForm() {
     }
 
     setErrors(nextErrors);
+    setValidationSummary(
+      nextErrors.name || nextErrors.phone
+        ? "Проверьте обязательные поля и исправьте ошибки."
+        : "Проверьте поля формы и исправьте ошибки.",
+    );
+    const firstVisibleInvalidField = invalidFields.find((field) => field !== "website");
+    const fieldElement = firstVisibleInvalidField
+      ? formRef.current?.elements.namedItem(firstVisibleInvalidField)
+      : null;
+    if (fieldElement instanceof HTMLElement) {
+      fieldElement.focus();
+    }
     return false;
   }
 
@@ -112,15 +132,21 @@ export default function ContactForm() {
           </p>
         </div>
 
-        <form className="bg-[color:var(--background)] p-5 shadow-xl shadow-black/10 sm:p-8" noValidate onSubmit={handleSubmit}>
+        <form className="bg-[color:var(--background)] p-5 shadow-xl shadow-black/10 sm:p-8" noValidate onSubmit={handleSubmit} ref={formRef}>
+          <p className="mb-5 text-sm font-semibold">* — обязательные поля</p>
+          {validationSummary ? (
+            <p aria-live="assertive" className="mb-5 border-l-4 border-red-700 pl-3 font-bold text-red-800" role="alert">
+              {validationSummary}
+            </p>
+          ) : null}
           <div className="grid gap-5 sm:grid-cols-2">
             <FieldError error={errors.name} id="name-error">
-              <label htmlFor="name">Имя</label>
-              <input aria-describedby={errors.name ? "name-error" : undefined} aria-invalid={Boolean(errors.name)} autoComplete="name" className={inputClassName} id="name" name="name" onChange={(event) => updateField("name", event.target.value)} value={values.name} />
+              <label htmlFor="name">Имя</label> <span aria-hidden="true">*</span>
+              <input aria-describedby={errors.name ? "name-error" : undefined} aria-invalid={Boolean(errors.name)} aria-required="true" autoComplete="name" className={inputClassName} id="name" name="name" onChange={(event) => updateField("name", event.target.value)} required value={values.name} />
             </FieldError>
             <FieldError error={errors.phone} id="phone-error">
-              <label htmlFor="phone">Телефон</label>
-              <input aria-describedby={errors.phone ? "phone-error" : undefined} aria-invalid={Boolean(errors.phone)} autoComplete="tel" className={inputClassName} id="phone" inputMode="tel" name="phone" onChange={(event) => updateField("phone", event.target.value)} value={values.phone} />
+              <label htmlFor="phone">Телефон</label> <span aria-hidden="true">*</span>
+              <input aria-describedby={errors.phone ? "phone-error" : undefined} aria-invalid={Boolean(errors.phone)} aria-required="true" autoComplete="tel" className={inputClassName} id="phone" inputMode="tel" name="phone" onChange={(event) => updateField("phone", event.target.value)} required value={values.phone} />
             </FieldError>
             <FieldError error={errors.telegram} id="telegram-error">
               <label htmlFor="telegram">Telegram</label>
