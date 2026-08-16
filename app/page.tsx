@@ -1,7 +1,15 @@
+import Footer from "@/components/Footer";
+import Header from "@/components/Header";
+import Hero from "@/components/Hero";
+
 export default function Home() {
   return (
-    <main>
-      <h1>Персонал для вашего мероприятия</h1>
-    </main>
+    <div id="top">
+      <Header />
+      <main id="contact">
+        <Hero />
+      </main>
+      <Footer />
+    </div>
   );
 }
