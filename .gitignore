@@ -1,2 +1,8 @@
 .worktrees/
 .superpowers/
+.next/
+node_modules/
+.env*
+!.env.example
+next-env.d.ts
+*.tsbuildinfo
