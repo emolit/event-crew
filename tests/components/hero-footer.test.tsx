@@ -15,13 +15,13 @@ describe("Hero", () => {
 });
 
 describe("Footer", () => {
-  it("renders all configured contact channels and current copyright", () => {
+  it("renders all configured contact channels and the approved copyright", () => {
     render(<Footer />);
 
     for (const contact of Object.values(siteConfig.contacts)) {
       expect(screen.getByRole("link", { name: new RegExp(contact.label, "i") })).toHaveAttribute("href", contact.href);
     }
-    expect(screen.getByText(`© ${new Date().getFullYear()} EVENT CREW`)).toBeInTheDocument();
+    expect(screen.getByText("© 2026 EVENT CREW. Все права защищены.")).toBeInTheDocument();
 
     expect(screen.getByRole("link", { name: /telegram/i })).toHaveAttribute("target", "_blank");
     expect(screen.getByRole("link", { name: /whatsapp/i })).toHaveAttribute("rel", expect.stringContaining("noopener"));

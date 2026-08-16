@@ -21,7 +21,7 @@ export default function Footer() {
           })}
         </address>
       </div>
-      <div className="border-t border-white/15 px-5 py-5 text-center text-xs font-bold uppercase tracking-[0.1em] text-white/65 sm:px-8 lg:px-12">© {new Date().getFullYear()} EVENT CREW</div>
+      <div className="border-t border-white/15 px-5 py-5 text-center text-xs font-bold uppercase tracking-[0.1em] text-white/65 sm:px-8 lg:px-12">© 2026 EVENT CREW. Все права защищены.</div>
     </footer>
   );
 }

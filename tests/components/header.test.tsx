@@ -22,6 +22,15 @@ describe("Header", () => {
     expect(screen.getByRole("dialog", { name: /мобильная навигация/i })).toBeInTheDocument();
     expect(document.body).toHaveStyle({ overflow: "hidden" });
 
+    const mobileMenu = screen.getByRole("dialog", { name: /мобильная навигация/i });
+    const closeButton = within(mobileMenu).getByRole("button", { name: /закрыть меню/i });
+    expect(closeButton).toHaveFocus();
+
+    await user.tab({ shift: true });
+    expect(within(mobileMenu).getByRole("link", { name: /оставить заявку/i })).toHaveFocus();
+    await user.tab();
+    expect(closeButton).toHaveFocus();
+
     await user.keyboard("{Escape}");
     expect(screen.queryByRole("dialog", { name: /мобильная навигация/i })).not.toBeInTheDocument();
     expect(toggle).toHaveFocus();
@@ -36,5 +45,6 @@ describe("Header", () => {
     await user.click(within(screen.getByRole("dialog", { name: /мобильная навигация/i })).getByRole("link", { name: "Услуги" }));
 
     expect(screen.queryByRole("dialog", { name: /мобильная навигация/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /открыть меню/i })).toHaveFocus();
   });
 });
