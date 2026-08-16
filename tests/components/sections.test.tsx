@@ -13,12 +13,15 @@ describe("data-driven content sections", () => {
     render(<Services />);
 
     const section = screen.getByRole("region", { name: /услуги/i });
+    expect(section).toHaveAttribute("id", "services");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
     expect(within(section).getAllByRole("article")).toHaveLength(8);
 
     for (const service of services) {
       expect(within(section).getByRole("heading", { name: service.name, level: 3 })).toBeInTheDocument();
-      expect(within(section).getByRole("img", { name: service.alt })).toHaveAttribute("alt", service.alt);
+      const image = within(section).getByRole("img", { name: service.alt });
+      expect(image).toHaveAttribute("alt", service.alt);
+      expect(image).toHaveAttribute("sizes", "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw");
     }
   });
 
@@ -26,6 +29,7 @@ describe("data-driven content sections", () => {
     render(<Advantages />);
 
     const section = screen.getByRole("region", { name: /почему мы/i });
+    expect(section).toHaveAttribute("id", "advantages");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
     expect(within(section).getAllByRole("article")).toHaveLength(4);
     expect(within(section).getByText("Работаем с мероприятиями в Москве")).toBeInTheDocument();
@@ -39,6 +43,7 @@ describe("data-driven content sections", () => {
     render(<Projects />);
 
     const section = screen.getByRole("region", { name: /проекты/i });
+    expect(section).toHaveAttribute("id", "projects");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
     expect(within(section).getAllByRole("article")).toHaveLength(6);
 
@@ -63,6 +68,7 @@ describe("data-driven content sections", () => {
     );
 
     const section = screen.getByRole("region", { name: /как мы работаем/i });
+    expect(section).toHaveAttribute("id", "process");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
     expect(within(section).getAllByRole("article")).toHaveLength(4);
 

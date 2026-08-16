@@ -4,7 +4,7 @@ import { processSteps } from "@/data/process";
 
 export default function Process() {
   return (
-    <section aria-labelledby="process-heading" className="border-y border-black/10 bg-white/35">
+    <section aria-labelledby="process-heading" className="border-y border-black/10 bg-white/35" id="process">
       <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <Reveal>
           <div id="process-heading">

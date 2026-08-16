@@ -17,7 +17,7 @@ const imageSizes: Record<ProjectSize, string> = {
 
 export default function Projects() {
   return (
-    <section aria-labelledby="projects-heading" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
+    <section aria-labelledby="projects-heading" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12" id="projects">
       <Reveal>
         <div id="projects-heading">
           <SectionHeading eyebrow="На площадке" title="Проекты" description="Каждый состав команды зависит от сценария, пространства и того, как гости двигаются по событию." />

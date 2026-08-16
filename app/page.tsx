@@ -16,6 +16,7 @@ export default function Home() {
         <Advantages />
         <Projects />
         <Process />
+        <div aria-hidden="true" className="scroll-mt-24" id="contact" />
       </main>
       <Footer />
     </div>
