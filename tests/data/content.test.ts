@@ -20,6 +20,19 @@ describe("landing content contracts", () => {
     expect(paths.every((path) => path.startsWith("/images/"))).toBe(true);
   });
 
+  it("describes concrete crew operations instead of generic agency promises", () => {
+    expect(advantages.map(({ title }) => title)).toEqual([
+      "Фиксируем состав и смены",
+      "Подтверждаем выход",
+      "Остаёмся на связи",
+      "Находим замену",
+    ]);
+    expect(processSteps.map(({ title }) => title)).toEqual(["Бриф", "Состав и смета", "Подтверждение", "Выход команды"]);
+    expect(JSON.stringify({ advantages, services, processSteps })).not.toMatch(
+      /индивидуальн|профессиональн|качественн|комфорт|оперативн/i,
+    );
+  });
+
   it("keeps the exact stable service ids and replacement paths", () => {
     expect(services.map((service) => service.id)).toEqual([
       "hostess",

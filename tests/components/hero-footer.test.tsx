@@ -8,10 +8,13 @@ describe("Hero", () => {
     render(<Hero />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/^Персонал для вашего мероприятия$/);
-    expect(screen.getByText("Подберем надежный персонал для мероприятий в Москве")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/^Люди, на которых держится событие$/);
+    expect(
+      screen.getByText("Подберём и выведем на площадку хостес, координаторов, регистраторов и линейный персонал в Москве"),
+    ).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /команда event crew на мероприятии/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Рассчитать стоимость" })).toHaveAttribute("href", "#contact");
+    expect(screen.getByRole("link", { name: "Рассчитать команду" })).toHaveAttribute("href", "#contact");
+    expect(screen.getByText("Москва / состав от 2 человек / на связи в день события")).toBeInTheDocument();
   });
 });
 

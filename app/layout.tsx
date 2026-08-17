@@ -3,7 +3,7 @@ import { themeColors } from "@/lib/theme";
 import "./globals.css";
 
 const title = "Персонал для мероприятий в Москве | EVENT CREW";
-const description = "Подбор хостес, промоутеров, координаторов, официантов и другого персонала для мероприятий в Москве.";
+const description = "Подберём и выведем на площадку хостес, координаторов, регистраторов и линейный персонал в Москве.";
 const themeStyle = {
   "--background": themeColors.background,
   "--foreground": themeColors.foreground,
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
         url: "/images/og-event-crew.png",
         width: 1200,
         height: 630,
-        alt: "EVENT CREW — персонал для вашего мероприятия",
+        alt: "EVENT CREW — команда для мероприятий в Москве",
       },
     ],
   },

@@ -1,7 +1,7 @@
 import { metadata } from "@/app/layout";
 
 const title = "Персонал для мероприятий в Москве | EVENT CREW";
-const description = "Подбор хостес, промоутеров, координаторов, официантов и другого персонала для мероприятий в Москве.";
+const description = "Подберём и выведем на площадку хостес, координаторов, регистраторов и линейный персонал в Москве.";
 
 it("exposes the approved Russian search and sharing metadata", () => {
   expect(metadata.title).toBe(title);
@@ -13,7 +13,7 @@ it("exposes the approved Russian search and sharing metadata", () => {
     images: [
       {
         url: "/images/og-event-crew.png",
-        alt: "EVENT CREW — персонал для вашего мероприятия",
+        alt: "EVENT CREW — команда для мероприятий в Москве",
       },
     ],
   });
