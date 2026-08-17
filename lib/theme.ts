@@ -1,7 +1,9 @@
 export const themeColors = {
-  background: "#f4f1e9",
-  foreground: "#11110f",
-  accent: "#f5bd00",
-  muted: "#686761",
-  mutedOnDark: "#aaa79f",
+  background: "#F2EFE6",
+  foreground: "#0A0A09",
+  accent: "#F4BD00",
+  muted: "#66645D",
+  mutedOnDark: "#B9B6AD",
+  line: "#CAC7BD",
+  danger: "#B83A2D",
 } as const;

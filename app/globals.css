@@ -1,11 +1,21 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f4f1e9;
-  --foreground: #11110f;
-  --accent: #f5bd00;
-  --muted: #686761;
-  --muted-on-dark: #aaa79f;
+  --stage-black: #0a0a09;
+  --work-paper: #f2efe6;
+  --tape-yellow: #f4bd00;
+  --rig-grey: #66645d;
+  --steel-line: #cac7bd;
+  --signal-red: #b83a2d;
+  --background: var(--work-paper);
+  --foreground: var(--stage-black);
+  --accent: var(--tape-yellow);
+  --muted: var(--rig-grey);
+  --muted-on-dark: #b9b6ad;
+  --line: var(--steel-line);
+  --danger: var(--signal-red);
+  --page-gutter: clamp(1.25rem, 4vw, 3.5rem);
+  --content-width: 90rem;
 }
 
 html {
@@ -22,7 +32,46 @@ body {
   overflow-x: hidden;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-body), Arial, sans-serif;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display), "Arial Narrow", sans-serif;
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+a,
+button,
+input,
+select,
+textarea {
+  outline-offset: 4px;
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+}
+
+.crew-line {
+  position: relative;
+}
+
+.crew-line::before {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 0.375rem;
+  background: var(--accent);
+  content: "";
 }
 
 ::selection {

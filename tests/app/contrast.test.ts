@@ -1,5 +1,17 @@
 import { themeColors } from "@/lib/theme";
 
+it("uses the EVENT CREW production palette", () => {
+  expect(themeColors).toMatchObject({
+    background: "#F2EFE6",
+    foreground: "#0A0A09",
+    accent: "#F4BD00",
+    muted: "#66645D",
+    mutedOnDark: "#B9B6AD",
+    line: "#CAC7BD",
+    danger: "#B83A2D",
+  });
+});
+
 function relativeLuminance(hex: string): number {
   const channels = hex.match(/[0-9a-f]{2}/gi)?.map((channel) => Number.parseInt(channel, 16) / 255);
   if (!channels || channels.length !== 3) {
