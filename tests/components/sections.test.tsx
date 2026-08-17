@@ -45,13 +45,14 @@ describe("data-driven content sections", () => {
   it("renders every project with its type, roles, and non-empty local image alternative", () => {
     render(<Projects />);
 
-    const section = screen.getByRole("region", { name: /проекты/i });
+    const section = screen.getByRole("region", { name: /команды на площадке/i });
     expect(section).toHaveAttribute("id", "projects");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
     expect(within(section).getAllByRole("article")).toHaveLength(6);
 
     for (const project of projects) {
       const projectCard = within(section).getByRole("article", { name: project.title });
+      expect(within(projectCard).getByTestId("project-caption")).toBeInTheDocument();
       expect(within(projectCard).getByText(project.type)).toBeInTheDocument();
       expect(within(projectCard).getByRole("img", { name: project.alt })).toHaveAttribute("alt", project.alt);
       for (const role of project.roles) {
@@ -70,17 +71,14 @@ describe("data-driven content sections", () => {
       </>,
     );
 
-    const section = screen.getByRole("region", { name: /как мы работаем/i });
+    const section = screen.getByRole("region", { name: /от брифа до выхода/i });
     expect(section).toHaveAttribute("id", "process");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
     expect(within(section).getAllByRole("article")).toHaveLength(4);
 
     for (const step of processSteps) {
       const stepCard = within(section).getByRole("article", { name: new RegExp(`${step.number}.*${step.title}`, "i") });
-      expect(within(stepCard).getByText(step.number)).toHaveClass(
-        "bg-[color:var(--accent)]",
-        "text-[color:var(--foreground)]",
-      );
+      expect(within(stepCard).getByText(step.number)).toHaveAttribute("data-timeline-marker");
       expect(within(stepCard).getByRole("heading", { name: step.title, level: 3 })).toBeInTheDocument();
     }
 

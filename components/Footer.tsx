@@ -4,7 +4,7 @@ import { siteConfig } from "@/data/site";
 export default function Footer() {
   return (
     <footer className="scroll-mt-24 border-t border-black/10 bg-[color:var(--foreground)] text-[color:var(--background)]" id="contacts">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,0.8fr)_minmax(0,1.5fr)] lg:px-12">
+      <div className="mx-auto grid max-w-[var(--content-width)] gap-10 px-[var(--page-gutter)] py-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,0.7fr)_minmax(0,1.5fr)]">
         <div className="flex items-start gap-4">
           <Image alt="Логотип EVENT CREW" height={72} src={siteConfig.logo} width={72} />
           <div>

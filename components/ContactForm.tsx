@@ -120,19 +120,18 @@ export default function ContactForm() {
   }
 
   return (
-    <section aria-labelledby="contact-heading" className="scroll-mt-24 bg-[color:var(--accent)] text-[color:var(--foreground)]" id="contact">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-start lg:gap-16 lg:px-12">
-        <div>
-          <p className="text-sm font-black uppercase tracking-[0.14em]">EVENT CREW</p>
-          <h2 className="mt-4 max-w-xl text-4xl font-black uppercase tracking-[-0.06em] sm:text-5xl lg:text-6xl" id="contact-heading">
-            Нужен персонал на мероприятие?
+    <section aria-labelledby="contact-heading" className="scroll-mt-24 bg-[color:var(--foreground)] text-[color:var(--background)] [--muted:var(--muted-on-dark)]" id="contact">
+      <div className="mx-auto grid max-w-[var(--content-width)] gap-12 px-[var(--page-gutter)] py-24 sm:py-32 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start lg:gap-20">
+        <div className="crew-line pl-6">
+          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--accent)]">Заявка / Москва</p>
+          <h2 className="mt-5 max-w-xl text-5xl font-black leading-[0.88] tracking-[-0.045em] sm:text-6xl lg:text-7xl" id="contact-heading">
+            Расскажите о событии
           </h2>
-          <p className="mt-6 max-w-lg text-lg leading-relaxed">
-            Расскажите о событии — подберём команду под задачи, формат и тайминг вашего мероприятия в Москве.
-          </p>
+          <p className="mt-7 max-w-lg text-lg leading-relaxed text-[color:var(--muted)]">Напишите дату, адрес, часы работы и нужные роли. Если состав пока неясен, опишите задачи на площадке.</p>
+          <p className="mt-10 border-t border-white/20 pt-5 text-sm font-extrabold uppercase tracking-[0.1em] text-[color:var(--accent)]">Вы получите состав, график и стоимость</p>
         </div>
 
-        <form className="bg-[color:var(--background)] p-5 shadow-xl shadow-black/10 sm:p-8" noValidate onSubmit={handleSubmit} ref={formRef}>
+        <form className="bg-[color:var(--background)] p-5 text-[color:var(--foreground)] sm:p-8" noValidate onSubmit={handleSubmit} ref={formRef}>
           <p className="mb-5 text-sm font-semibold">* — обязательные поля</p>
           {validationSummary ? (
             <p aria-live="assertive" className="mb-5 border-l-4 border-red-700 pl-3 font-bold text-red-800" role="alert">
@@ -181,7 +180,7 @@ export default function ContactForm() {
             <input autoComplete="off" className="sr-only" id="website" name="website" onChange={(event) => updateField("website", event.target.value)} tabIndex={-1} type="text" value={values.website} />
           </div>
 
-          <button className="mt-7 inline-flex min-h-11 w-full items-center justify-center bg-[color:var(--foreground)] px-6 text-sm font-black uppercase tracking-[0.08em] text-[color:var(--background)] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-70" disabled={status === "submitting"} type="submit">
+          <button className="mt-7 inline-flex min-h-12 w-full items-center justify-center bg-[color:var(--accent)] px-6 text-sm font-black uppercase tracking-[0.08em] text-[color:var(--foreground)] transition-transform duration-150 hover:-translate-y-0.5 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-70" disabled={status === "submitting"} type="submit">
             {status === "submitting" ? "Отправляем…" : "Отправить заявку"}
           </button>
           {status === "success" ? <p aria-live="polite" className="mt-4 font-bold text-green-800" role="status">{successCopy}</p> : null}
@@ -192,7 +191,7 @@ export default function ContactForm() {
   );
 }
 
-const inputClassName = "mt-2 min-h-11 w-full border border-black/25 bg-white px-3 py-2 text-base outline-none transition focus:border-black focus:ring-2 focus:ring-[color:var(--accent)] aria-[invalid=true]:border-red-700";
+const inputClassName = "mt-2 min-h-12 w-full border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2 text-base outline-none transition-colors focus:border-black focus:ring-2 focus:ring-[color:var(--accent)] aria-[invalid=true]:border-[color:var(--danger)]";
 
 function FieldError({ children, error, id }: { children: React.ReactNode; error?: string; id: string }) {
   return (

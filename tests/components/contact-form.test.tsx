@@ -31,6 +31,13 @@ afterEach(() => {
 });
 
 describe("ContactForm", () => {
+  it("tells the client what the estimate contains", () => {
+    render(<ContactForm />);
+
+    expect(screen.getByRole("heading", { level: 2, name: "Расскажите о событии" })).toBeInTheDocument();
+    expect(screen.getByText("Вы получите состав, график и стоимость")).toBeInTheDocument();
+  });
+
   it("renders labeled fields, service options, and an inaccessible honeypot", () => {
     render(<ContactForm />);
 
