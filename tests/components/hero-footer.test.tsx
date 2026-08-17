@@ -5,7 +5,7 @@ import { siteConfig } from "@/data/site";
 
 describe("Hero", () => {
   it("provides the exact Hero copy, sole top-level heading, image alt, and contact CTA", () => {
-    render(<Hero />);
+    const { container } = render(<Hero />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/^Люди, на которых держится событие$/);
@@ -15,6 +15,7 @@ describe("Hero", () => {
     expect(screen.getByRole("img", { name: /команда event crew на мероприятии/i })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Рассчитать команду" })).toHaveAttribute("href", "#contact");
     expect(screen.getByText("Москва / состав от 2 человек / на связи в день события")).toBeInTheDocument();
+    expect(container.querySelector('[data-crew-line="hero"]')).toBeInTheDocument();
   });
 });
 

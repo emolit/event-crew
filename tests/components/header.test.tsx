@@ -8,7 +8,7 @@ describe("Header", () => {
     render(<Header />);
 
     expect(screen.getByRole("navigation", { name: /основная навигация/i })).toHaveClass("xl:flex");
-    expect(screen.getByRole("link", { name: /оставить заявку/i })).toHaveClass("xl:inline-flex");
+    expect(screen.getByRole("link", { name: /обсудить событие/i })).toHaveClass("xl:inline-flex");
     expect(screen.getByRole("button", { name: /открыть меню/i })).toHaveClass("xl:hidden");
   });
 
@@ -26,7 +26,7 @@ describe("Header", () => {
     for (const item of siteConfig.nav) {
       expect(navigation).toHaveTextContent(item.label);
     }
-    expect(screen.getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "#contact");
+    expect(screen.getByRole("link", { name: /обсудить событие/i })).toHaveAttribute("href", "#contact");
 
     const toggle = screen.getByRole("button", { name: /открыть меню/i });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
@@ -44,7 +44,7 @@ describe("Header", () => {
     expect(closeButton).toHaveFocus();
 
     await user.tab({ shift: true });
-    expect(within(mobileMenu).getByRole("link", { name: /оставить заявку/i })).toHaveFocus();
+    expect(within(mobileMenu).getByRole("link", { name: /обсудить событие/i })).toHaveFocus();
     await user.tab();
     expect(closeButton).toHaveFocus();
 

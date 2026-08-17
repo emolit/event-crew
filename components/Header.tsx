@@ -76,8 +76,8 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-[color:var(--background)]/90 backdrop-blur-md">
-        <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-[color:var(--background)]/95 backdrop-blur-md">
+        <div className="mx-auto flex min-h-16 max-w-[var(--content-width)] items-center justify-between gap-4 px-[var(--page-gutter)]">
           <a className="inline-flex min-h-11 min-w-11 items-center rounded-sm focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" href="#top" aria-label="EVENT CREW — на главную">
             <Image src={siteConfig.logo} alt="Логотип EVENT CREW" width={48} height={48} priority />
           </a>
@@ -91,7 +91,7 @@ export default function Header() {
           </nav>
 
           <a className="hidden min-h-11 items-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)] xl:inline-flex" href="#contact">
-            Оставить заявку
+            Обсудить событие
           </a>
 
           <button
@@ -142,7 +142,7 @@ export default function Header() {
                   ))}
                   <li className="pt-3">
                     <a className="flex min-h-11 items-center justify-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)]" href="#contact" onClick={() => closeMenu(true)}>
-                      Оставить заявку
+                      Обсудить событие
                     </a>
                   </li>
                 </ul>
