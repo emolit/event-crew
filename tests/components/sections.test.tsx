@@ -12,16 +12,17 @@ describe("data-driven content sections", () => {
   it("renders every configured service with its local image alternative", () => {
     render(<Services />);
 
-    const section = screen.getByRole("region", { name: /услуги/i });
+    const section = screen.getByRole("region", { name: /кого выводим на площадку/i });
     expect(section).toHaveAttribute("id", "services");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
-    expect(within(section).getAllByRole("article")).toHaveLength(8);
+    expect(within(section).getByRole("list", { name: /состав команды/i })).toBeInTheDocument();
+    expect(within(section).getAllByRole("listitem")).toHaveLength(8);
 
     for (const service of services) {
       expect(within(section).getByRole("heading", { name: service.name, level: 3 })).toBeInTheDocument();
       const image = within(section).getByRole("img", { name: service.alt });
       expect(image).toHaveAttribute("alt", service.alt);
-      expect(image).toHaveAttribute("sizes", "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw");
+      expect(image).toHaveAttribute("sizes", "(min-width: 1024px) 38vw, (min-width: 640px) 50vw, 100vw");
       expect(image.parentElement).toHaveClass("aspect-[2/3]");
     }
   });
@@ -29,10 +30,11 @@ describe("data-driven content sections", () => {
   it("renders all four advantages and states its Moscow-only scope", () => {
     render(<Advantages />);
 
-    const section = screen.getByRole("region", { name: /почему мы/i });
+    const section = screen.getByRole("region", { name: /что держим под контролем/i });
     expect(section).toHaveAttribute("id", "advantages");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
-    expect(within(section).getAllByRole("article")).toHaveLength(4);
+    expect(within(section).getByRole("list", { name: /контроль выхода команды/i })).toBeInTheDocument();
+    expect(within(section).getAllByRole("listitem")).toHaveLength(4);
     expect(within(section).getByText("Работаем с мероприятиями в Москве")).toBeInTheDocument();
 
     for (const advantage of advantages) {
