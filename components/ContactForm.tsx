@@ -24,8 +24,8 @@ const errorMessages: Partial<Record<FormField, string>> = {
   phone: "Укажите корректный телефон",
 };
 
-const successCopy = "Спасибо! Заявка отправлена. Скоро мы свяжемся с вами.";
-const failureCopy = "Не удалось отправить заявку. Попробуйте еще раз.";
+const successCopy = "Заявка отправлена. Мы свяжемся с вами по указанному контакту.";
+const failureCopy = "Не удалось отправить заявку. Проверьте соединение и повторите отправку.";
 
 export default function ContactForm() {
   const formRef = useRef<HTMLFormElement>(null);
@@ -132,7 +132,7 @@ export default function ContactForm() {
         </div>
 
         <form className="bg-[color:var(--background)] p-5 text-[color:var(--foreground)] sm:p-8" noValidate onSubmit={handleSubmit} ref={formRef}>
-          <p className="mb-5 text-sm font-semibold">* — обязательные поля</p>
+          <p className="mb-5 text-sm font-semibold">* обозначает обязательные поля</p>
           {validationSummary ? (
             <p aria-live="assertive" className="mb-5 border-l-4 border-red-700 pl-3 font-bold text-red-800" role="alert">
               {validationSummary}

@@ -78,7 +78,7 @@ export default function Header() {
     <>
       <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-[color:var(--background)]/95 backdrop-blur-md">
         <div className="mx-auto flex min-h-16 max-w-[var(--content-width)] items-center justify-between gap-4 px-[var(--page-gutter)]">
-          <a className="inline-flex min-h-11 min-w-11 items-center rounded-sm focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" href="#top" aria-label="EVENT CREW — на главную">
+          <a className="inline-flex min-h-11 min-w-11 items-center rounded-sm focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" href="#top" aria-label="EVENT CREW: на главную">
             <Image src={siteConfig.logo} alt="Логотип EVENT CREW" width={48} height={48} priority />
           </a>
 

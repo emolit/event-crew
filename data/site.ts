@@ -30,9 +30,9 @@ export const siteConfig = {
   logo: "/images/brand/event-crew-logo.png",
   nav: [
     { label: "Услуги", href: "#services" },
-    { label: "Почему мы", href: "#advantages" },
+    { label: "Контроль", href: "#advantages" },
     { label: "Проекты", href: "#projects" },
-    { label: "Как мы работаем", href: "#process" },
+    { label: "Процесс", href: "#process" },
     { label: "Контакты", href: "#contacts" },
   ],
   contacts: {

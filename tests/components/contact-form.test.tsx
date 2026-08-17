@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import ContactForm from "@/components/ContactForm";
 
-const successCopy = "Спасибо! Заявка отправлена. Скоро мы свяжемся с вами.";
-const failureCopy = "Не удалось отправить заявку. Попробуйте еще раз.";
+const successCopy = "Заявка отправлена. Мы свяжемся с вами по указанному контакту.";
+const failureCopy = "Не удалось отправить заявку. Проверьте соединение и повторите отправку.";
 
 const validValues = {
   name: "Иван",
@@ -57,7 +57,7 @@ describe("ContactForm", () => {
   it("marks name and phone as required and explains the visible asterisk", () => {
     render(<ContactForm />);
 
-    expect(screen.getByText("* — обязательные поля")).toBeVisible();
+    expect(screen.getByText("* обозначает обязательные поля")).toBeVisible();
     for (const label of ["Имя", "Телефон"]) {
       expect(screen.getByLabelText(label)).toBeRequired();
       expect(screen.getByLabelText(label)).toHaveAttribute("aria-required", "true");

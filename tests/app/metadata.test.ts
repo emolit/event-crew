@@ -13,7 +13,7 @@ it("exposes the approved Russian search and sharing metadata", () => {
     images: [
       {
         url: "/images/og-event-crew.png",
-        alt: "EVENT CREW — команда для мероприятий в Москве",
+        alt: "EVENT CREW: команда для мероприятий в Москве",
       },
     ],
   });
