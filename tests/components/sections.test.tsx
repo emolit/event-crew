@@ -1,4 +1,5 @@
 import { render, screen, within } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import Advantages from "@/components/Advantages";
 import Process from "@/components/Process";
 import Projects from "@/components/Projects";
@@ -15,16 +16,38 @@ describe("data-driven content sections", () => {
     const section = screen.getByRole("region", { name: /кого выводим на площадку/i });
     expect(section).toHaveAttribute("id", "services");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
-    expect(within(section).getByRole("list", { name: /состав команды/i })).toBeInTheDocument();
-    expect(within(section).getAllByRole("listitem")).toHaveLength(8);
+    const mobileRoster = within(section).getByRole("list", { name: "Состав команды: карточки" });
+    expect(within(mobileRoster).getAllByRole("listitem")).toHaveLength(8);
 
     for (const service of services) {
-      expect(within(section).getByRole("heading", { name: service.name, level: 3 })).toBeInTheDocument();
-      const image = within(section).getByRole("img", { name: service.alt });
+      expect(within(mobileRoster).getByRole("heading", { name: service.name, level: 3 })).toBeInTheDocument();
+      const image = within(mobileRoster).getByRole("img", { name: service.alt });
       expect(image).toHaveAttribute("alt", service.alt);
-      expect(image).toHaveAttribute("sizes", "(min-width: 1024px) 38vw, (min-width: 640px) 50vw, 100vw");
+      expect(image).toHaveAttribute("sizes", "(min-width: 640px) 50vw, 100vw");
       expect(image.parentElement).toHaveClass("aspect-[2/3]");
     }
+  });
+
+  it("changes the desktop roster image on hover and keyboard focus", async () => {
+    const user = userEvent.setup();
+    render(<Services />);
+
+    const roster = screen.getByRole("list", { name: "Состав команды: выбор роли" });
+    const stage = screen.getByTestId("service-stage");
+    const firstRole = within(roster).getByRole("button", { name: `Показать: ${services[0].name}` });
+    const secondRole = within(roster).getByRole("button", { name: `Показать: ${services[1].name}` });
+
+    expect(firstRole).toHaveAttribute("aria-pressed", "true");
+    expect(stage).toHaveAttribute("data-active-service", services[0].id);
+
+    await user.hover(secondRole);
+    expect(secondRole).toHaveAttribute("aria-pressed", "true");
+    expect(stage).toHaveAttribute("data-active-service", services[1].id);
+
+    await user.tab();
+    expect(firstRole).toHaveFocus();
+    expect(firstRole).toHaveAttribute("aria-pressed", "true");
+    expect(stage).toHaveAttribute("data-active-service", services[0].id);
   });
 
   it("renders all four advantages and states its Moscow-only scope", () => {

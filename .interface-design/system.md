@@ -9,7 +9,8 @@ Production board for an event producer checking a staffing partner between calls
 - Stage black `#0A0A09`
 - Work paper `#F2EFE6`
 - Tape yellow `#F4BD00`
-- Rig grey `#66645D`
+- Rig grey `#8A8982`, structural marks and inactive decoration
+- Readable grey `#66645D`, secondary text on work paper
 - Steel line `#CAC7BD`
 - Signal red `#B83A2D`, errors only
 

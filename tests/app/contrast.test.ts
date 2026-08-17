@@ -5,6 +5,7 @@ it("uses the EVENT CREW production palette", () => {
     background: "#F2EFE6",
     foreground: "#0A0A09",
     accent: "#F4BD00",
+    rigGrey: "#8A8982",
     muted: "#66645D",
     mutedOnDark: "#B9B6AD",
     line: "#CAC7BD",
@@ -36,6 +37,7 @@ it.each([
   ["muted text on cream", themeColors.muted, themeColors.background],
   ["muted text on black", themeColors.mutedOnDark, themeColors.foreground],
   ["black text on yellow", themeColors.foreground, themeColors.accent],
+  ["danger text on cream", themeColors.danger, themeColors.background],
 ])("keeps %s at WCAG AA contrast", (_label, foreground, background) => {
   expect(contrastRatio(foreground, background)).toBeGreaterThanOrEqual(4.5);
 });

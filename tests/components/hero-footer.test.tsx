@@ -16,6 +16,7 @@ describe("Hero", () => {
     expect(screen.getByRole("link", { name: "Рассчитать команду" })).toHaveAttribute("href", "#contact");
     expect(screen.getByText("Москва / состав от 2 человек / на связи в день события")).toBeInTheDocument();
     expect(container.querySelector('[data-crew-line="hero"]')).toBeInTheDocument();
+    expect(container.querySelectorAll("[data-hero-stage]")).toHaveLength(4);
   });
 });
 

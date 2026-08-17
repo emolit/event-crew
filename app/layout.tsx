@@ -12,6 +12,7 @@ const themeStyle = {
   "--background": themeColors.background,
   "--foreground": themeColors.foreground,
   "--accent": themeColors.accent,
+  "--rig-grey": themeColors.rigGrey,
   "--muted": themeColors.muted,
   "--muted-on-dark": themeColors.mutedOnDark,
   "--line": themeColors.line,

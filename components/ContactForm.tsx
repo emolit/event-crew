@@ -134,7 +134,7 @@ export default function ContactForm() {
         <form className="bg-[color:var(--background)] p-5 text-[color:var(--foreground)] sm:p-8" noValidate onSubmit={handleSubmit} ref={formRef}>
           <p className="mb-5 text-sm font-semibold">* обозначает обязательные поля</p>
           {validationSummary ? (
-            <p aria-live="assertive" className="mb-5 border-l-4 border-red-700 pl-3 font-bold text-red-800" role="alert">
+            <p aria-live="assertive" className="mb-5 border-l-4 border-[color:var(--danger)] pl-3 font-bold text-[color:var(--danger)]" role="alert">
               {validationSummary}
             </p>
           ) : null}
@@ -183,8 +183,8 @@ export default function ContactForm() {
           <button className="mt-7 inline-flex min-h-12 w-full items-center justify-center bg-[color:var(--accent)] px-6 text-sm font-black uppercase tracking-[0.08em] text-[color:var(--foreground)] transition-transform duration-150 hover:-translate-y-0.5 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-70" disabled={status === "submitting"} type="submit">
             {status === "submitting" ? "Отправляем…" : "Отправить заявку"}
           </button>
-          {status === "success" ? <p aria-live="polite" className="mt-4 font-bold text-green-800" role="status">{successCopy}</p> : null}
-          {status === "error" ? <p aria-live="polite" className="mt-4 font-bold text-red-800" role="status">{failureCopy}</p> : null}
+          {status === "success" ? <p aria-live="polite" className="mt-4 font-bold text-[color:var(--foreground)]" role="status">{successCopy}</p> : null}
+          {status === "error" ? <p aria-live="polite" className="mt-4 font-bold text-[color:var(--danger)]" role="status">{failureCopy}</p> : null}
         </form>
       </div>
     </section>
@@ -197,7 +197,7 @@ function FieldError({ children, error, id }: { children: React.ReactNode; error?
   return (
     <div>
       {children}
-      {error ? <p className="mt-1 text-sm font-semibold text-red-800" id={id}>{error}</p> : null}
+      {error ? <p className="mt-1 text-sm font-semibold text-[color:var(--danger)]" id={id}>{error}</p> : null}
     </div>
   );
 }
