@@ -21,7 +21,7 @@ export default function PersonnelGrid() {
               {isOpen ? (
                 <motion.article
                   animate={{ opacity: 1, rotateY: 0 }}
-                  className="flex min-h-[30rem] flex-col bg-[color:var(--accent)] p-6 text-[color:var(--foreground)]"
+                  className="relative min-h-[30rem] overflow-hidden bg-[color:var(--accent)] text-[color:var(--foreground)]"
                   exit={{ opacity: 0, rotateY: prefersReducedMotion ? 0 : 90 }}
                   id={panelId}
                   initial={{ opacity: 0, rotateY: prefersReducedMotion ? 0 : -90 }}
@@ -31,20 +31,21 @@ export default function PersonnelGrid() {
                   <button
                     aria-controls={panelId}
                     aria-expanded="true"
-                    aria-label={`Вернуться: ${service.name}`}
-                    className="ml-auto grid size-11 place-items-center border border-black/35 text-2xl font-light transition-colors hover:bg-black hover:text-white focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black"
+                    aria-label={`Свернуть карточку: ${service.name}`}
+                    className="absolute inset-0 z-0 size-full cursor-pointer focus-visible:outline-4 focus-visible:-outline-offset-4 focus-visible:outline-black"
                     onClick={() => setOpenCard(null)}
                     type="button"
-                  >
-                    <span aria-hidden="true">×</span>
-                  </button>
-                  <p className="mt-8 text-xs font-black uppercase tracking-[0.16em]">Стоимость работы</p>
-                  <p className="mt-3 text-3xl font-black uppercase tracking-[-0.05em]">от {service.price} ₽/час</p>
-                  <h2 className="mt-8 text-2xl font-black uppercase tracking-[-0.04em]">{service.name}</h2>
-                  <p className="mt-4 text-base leading-relaxed">{service.description}</p>
-                  <a className="mt-auto inline-flex min-h-11 items-center justify-center bg-black px-5 text-sm font-black uppercase tracking-[0.08em] text-white transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black" href="#personnel-contact">
-                    Оставить заявку
-                  </a>
+                  />
+                  <div className="pointer-events-none relative z-10 flex min-h-[30rem] flex-col p-6">
+                    <p className="text-[0.65rem] font-black uppercase tracking-[0.14em] text-black/55">Нажмите ещё раз, чтобы вернуться</p>
+                    <p className="mt-10 text-xs font-black uppercase tracking-[0.16em]">Стоимость работы</p>
+                    <p className="mt-3 font-serif text-4xl font-bold leading-none tracking-[-0.03em]">от {service.price} ₽/час</p>
+                    <h2 className="mt-8 text-2xl font-black uppercase tracking-[-0.04em]">{service.name}</h2>
+                    <p className="mt-4 font-serif text-lg leading-7 text-black/75">{service.description}</p>
+                    <a className="pointer-events-auto mt-auto inline-flex min-h-11 items-center justify-center bg-black px-5 text-sm font-black uppercase tracking-[0.08em] text-white transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black" href="#personnel-contact">
+                      Оставить заявку
+                    </a>
+                  </div>
                 </motion.article>
               ) : (
                 <motion.button

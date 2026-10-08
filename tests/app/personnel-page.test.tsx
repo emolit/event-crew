@@ -52,17 +52,56 @@ describe("Personnel page", () => {
     }
   });
 
-  it("reveals the selected role description and price after a card is activated", async () => {
+  it("reveals the selected role with calmer price and description typography", async () => {
     const user = userEvent.setup();
     render(<PersonnelPage />);
 
     await user.click(screen.getByRole("button", { name: "Подробнее: Хелперы" }));
 
     const card = screen.getByRole("listitem", { name: "Хелперы" });
-    expect(await within(card).findByText("от 700 ₽/час")).toBeInTheDocument();
-    expect(within(card).getByText(/подготовкой, навигацией и организационными задачами/i)).toBeInTheDocument();
+    expect(await within(card).findByText("от 700 ₽/час")).toHaveClass(
+      "font-serif",
+      "text-4xl",
+      "tracking-[-0.03em]",
+    );
+    expect(within(card).getByText(/подготовкой, навигацией и организационными задачами/i)).toHaveClass(
+      "font-serif",
+      "text-lg",
+      "leading-7",
+      "text-black/75",
+    );
     expect(within(card).getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "#personnel-contact");
-    expect(within(card).getByRole("button", { name: "Вернуться: Хелперы" })).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("flips an open card back when the same card is activated again without showing a close icon", async () => {
+    const user = userEvent.setup();
+    render(<PersonnelPage />);
+
+    await user.click(screen.getByRole("button", { name: "Подробнее: Хелперы" }));
+
+    const card = screen.getByRole("listitem", { name: "Хелперы" });
+    const collapseButton = await within(card).findByRole("button", { name: "Свернуть карточку: Хелперы" });
+    expect(collapseButton).toHaveAttribute("aria-expanded", "true");
+    expect(within(card).queryByText("×")).not.toBeInTheDocument();
+
+    await user.click(collapseButton);
+
+    expect(await within(card).findByRole("button", { name: "Подробнее: Хелперы" })).toHaveAttribute("aria-expanded", "false");
+    expect(within(card).queryByText("от 700 ₽/час")).not.toBeInTheDocument();
+  });
+
+  it("keeps the inquiry link usable without flipping the card back", async () => {
+    const user = userEvent.setup();
+    render(<PersonnelPage />);
+
+    await user.click(screen.getByRole("button", { name: "Подробнее: Хелперы" }));
+
+    const card = screen.getByRole("listitem", { name: "Хелперы" });
+    const inquiryLink = await within(card).findByRole("link", { name: /оставить заявку/i });
+    inquiryLink.addEventListener("click", (event) => event.preventDefault(), { once: true });
+    await user.click(inquiryLink);
+
+    expect(within(card).getByRole("button", { name: "Свернуть карточку: Хелперы" })).toBeInTheDocument();
   });
 
   it("finishes with the Telegram-backed inquiry form", () => {
