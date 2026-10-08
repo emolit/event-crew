@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { siteConfig } from "@/data/site";
@@ -76,29 +77,29 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-[color:var(--background)]/95 backdrop-blur-md">
-        <div className="mx-auto flex min-h-16 max-w-[var(--content-width)] items-center justify-between gap-4 px-[var(--page-gutter)]">
-          <a className="inline-flex min-h-11 min-w-11 items-center rounded-sm focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" href="#top" aria-label="EVENT CREW: на главную">
+      <header className="fixed inset-x-0 top-0 z-50 border-b border-black/10 bg-[color:var(--background)]/90 text-[color:var(--foreground)] backdrop-blur-md">
+        <div className="mx-auto flex min-h-20 max-w-7xl items-center justify-between gap-4 px-5 sm:px-8 lg:px-12">
+          <Link className="inline-flex min-h-11 min-w-11 items-center rounded-sm focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" href="/" aria-label="EVENT CREW — на главную">
             <Image src={siteConfig.logo} alt="Логотип EVENT CREW" width={48} height={48} priority />
-          </a>
+          </Link>
 
           <nav className="hidden items-center gap-6 xl:flex" aria-label="Основная навигация">
             {siteConfig.nav.map((item) => (
-              <a className="rounded-sm py-3 text-sm font-bold uppercase tracking-[0.08em] transition-colors hover:text-[color:var(--muted)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" href={item.href} key={item.href}>
+              <Link className="rounded-sm py-3 text-sm font-bold uppercase tracking-[0.08em] transition-colors hover:text-[color:var(--muted)] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" href={item.href} key={item.href}>
                 {item.label}
-              </a>
+              </Link>
             ))}
           </nav>
 
-          <a className="hidden min-h-11 items-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)] xl:inline-flex" href="#contact">
-            Обсудить событие
-          </a>
+          <Link className="hidden min-h-11 items-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)] xl:inline-flex" href="/#contact">
+            Оставить заявку
+          </Link>
 
           <button
             aria-controls="mobile-navigation"
             aria-expanded={isMenuOpen}
             aria-label={isMenuOpen ? "Закрыть меню" : "Открыть меню"}
-            className="grid size-11 place-items-center rounded-sm border border-black/15 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)] xl:hidden"
+            className="grid size-11 place-items-center rounded-sm border border-black/15 bg-[color:var(--foreground)] text-white focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)] xl:hidden"
             onClick={() => (isMenuOpen ? closeMenu(true) : setIsMenuOpen(true))}
             ref={menuButtonRef}
             type="button"
@@ -135,15 +136,15 @@ export default function Header() {
                 <ul className="grid w-full gap-1">
                   {siteConfig.nav.map((item) => (
                     <li key={item.href}>
-                      <a className="flex min-h-11 items-center rounded-sm px-3 text-lg font-black uppercase tracking-[0.04em] hover:bg-black/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]" href={item.href} onClick={() => closeMenu(true)}>
+                      <Link className="flex min-h-11 items-center rounded-sm px-3 text-lg font-black uppercase tracking-[0.04em] hover:bg-black/5 focus-visible:outline-3 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--accent)]" href={item.href} onClick={() => closeMenu(true)}>
                         {item.label}
-                      </a>
+                      </Link>
                     </li>
                   ))}
                   <li className="pt-3">
-                    <a className="flex min-h-11 items-center justify-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)]" href="#contact" onClick={() => closeMenu(true)}>
-                      Обсудить событие
-                    </a>
+                    <Link className="flex min-h-11 items-center justify-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)]" href="/#contact" onClick={() => closeMenu(true)}>
+                      Оставить заявку
+                    </Link>
                   </li>
                 </ul>
               </nav>

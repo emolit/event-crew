@@ -8,7 +8,7 @@ describe("Header", () => {
     render(<Header />);
 
     expect(screen.getByRole("navigation", { name: /основная навигация/i })).toHaveClass("xl:flex");
-    expect(screen.getByRole("link", { name: /обсудить событие/i })).toHaveClass("xl:inline-flex");
+    expect(screen.getByRole("link", { name: /оставить заявку/i })).toHaveClass("xl:inline-flex");
     expect(screen.getByRole("button", { name: /открыть меню/i })).toHaveClass("xl:hidden");
   });
 
@@ -26,7 +26,8 @@ describe("Header", () => {
     for (const item of siteConfig.nav) {
       expect(navigation).toHaveTextContent(item.label);
     }
-    expect(screen.getByRole("link", { name: /обсудить событие/i })).toHaveAttribute("href", "#contact");
+    expect(screen.getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "/#contact");
+    expect(within(navigation).getByRole("link", { name: "Персонал" })).toHaveAttribute("href", "/personnel");
 
     const toggle = screen.getByRole("button", { name: /открыть меню/i });
     expect(toggle).toHaveAttribute("aria-expanded", "false");
@@ -44,7 +45,7 @@ describe("Header", () => {
     expect(closeButton).toHaveFocus();
 
     await user.tab({ shift: true });
-    expect(within(mobileMenu).getByRole("link", { name: /обсудить событие/i })).toHaveFocus();
+    expect(within(mobileMenu).getByRole("link", { name: /оставить заявку/i })).toHaveFocus();
     await user.tab();
     expect(closeButton).toHaveFocus();
 
@@ -63,7 +64,9 @@ describe("Header", () => {
     render(<Header />);
 
     await user.click(screen.getByRole("button", { name: /открыть меню/i }));
-    await user.click(within(screen.getByRole("dialog", { name: /мобильная навигация/i })).getByRole("link", { name: "Услуги" }));
+    const personnelLink = within(screen.getByRole("dialog", { name: /мобильная навигация/i })).getByRole("link", { name: "Персонал" });
+    personnelLink.addEventListener("click", (event) => event.preventDefault(), { once: true });
+    await user.click(personnelLink);
 
     await waitFor(() => {
       expect(screen.queryByRole("dialog", { name: /мобильная навигация/i })).not.toBeInTheDocument();

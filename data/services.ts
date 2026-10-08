@@ -1,67 +1,76 @@
 export interface Service {
-  id: "hostess" | "promoters" | "helpers" | "waiters" | "coordinators" | "cloakroom" | "registrars" | "animators";
+  id: "helpers" | "promoters" | "hostess" | "waiters" | "coordinators" | "cloakroom" | "security" | "riggers";
   name: string;
   description: string;
+  price: number;
   image: string;
   alt: string;
 }
 
 export const services = [
   {
-    id: "hostess",
-    name: "Хостес",
-    description: "Встречают гостей, сверяют списки и показывают маршрут по площадке.",
-    image: "/images/services/service-hostess.webp",
-    alt: "Хостес встречает гостей на мероприятии",
+    id: "helpers",
+    name: "Хелперы",
+    description: "Помогают с подготовкой, навигацией и организационными задачами на площадке.",
+    price: 700,
+    image: "/images/services/service-helpers.webp",
+    alt: "Хелпер помогает подготовить площадку мероприятия",
   },
   {
     id: "promoters",
     name: "Промоутеры",
-    description: "Рассказывают о продукте, раздают материалы и собирают контакты гостей.",
+    description: "Представляют проект, общаются с аудиторией и поддерживают активность на площадке.",
+    price: 750,
     image: "/images/services/service-promoters.webp",
     alt: "Промоутеры работают с гостями на выставочной площадке",
   },
   {
-    id: "helpers",
-    name: "Хелперы",
-    description: "Расставляют материалы, направляют потоки гостей и выполняют задачи координатора.",
-    image: "/images/services/service-helpers.webp",
-    alt: "Хелперы помогают подготовить площадку мероприятия",
+    id: "hostess",
+    name: "Хостес",
+    description: "Встречают гостей, помогают с навигацией и создают первое впечатление о событии.",
+    price: 850,
+    image: "/images/services/service-hostess.webp",
+    alt: "Хостес встречает гостей на мероприятии",
   },
   {
     id: "waiters",
     name: "Официанты",
-    description: "Сервируют столы, подают блюда и убирают посуду по плану площадки.",
+    description: "Обеспечивают внимательное обслуживание гостей на банкетах и деловых событиях.",
+    price: 650,
     image: "/images/services/service-waiters.webp",
     alt: "Официант обслуживает гостей на банкете",
   },
   {
     id: "coordinators",
     name: "Координаторы",
-    description: "Распределяют задачи, сверяют тайминг и держат связь с заказчиком.",
+    description: "Следят за таймингом, командой и задачами на каждом этапе мероприятия.",
+    price: 850,
     image: "/images/services/service-coordinators.webp",
     alt: "Координатор управляет работой команды на площадке",
   },
   {
     id: "cloakroom",
     name: "Гардеробщики",
-    description: "Принимают одежду, выдают номерки и следят за порядком в гардеробе.",
+    description: "Организуют работу гардероба и помогают гостям чувствовать себя комфортно.",
+    price: 550,
     image: "/images/services/service-cloakroom.webp",
     alt: "Сотрудник принимает верхнюю одежду в гардеробе",
   },
   {
-    id: "registrars",
-    name: "Регистраторы",
-    description: "Находят участника в списке, выдают бейдж и отмечают его приход.",
-    image: "/images/services/service-registrars.webp",
-    alt: "Регистратор встречает участников у стойки регистрации",
+    id: "security",
+    name: "Охрана",
+    description: "Поддерживает порядок на площадке, контролирует вход и спокойно реагирует на нестандартные ситуации.",
+    price: 700,
+    image: "/images/services/service-security.jpg",
+    alt: "Сотрудник охраны работает на мероприятии",
   },
   {
-    id: "animators",
-    name: "Аниматоры",
-    description: "Проводят игры по сценарию и работают с детской аудиторией.",
-    image: "/images/services/service-animators.webp",
-    alt: "Аниматор проводит активность для гостей мероприятия",
+    id: "riggers",
+    name: "Грузчики / такелажники",
+    description: "Перемещают оборудование, работают с конструкциями и помогают провести монтаж и демонтаж.",
+    price: 700,
+    image: "/images/services/service-riggers.jpg",
+    alt: "Такелажник перемещает сценическое оборудование",
   },
 ] as const satisfies readonly Service[];
 

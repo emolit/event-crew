@@ -20,39 +20,27 @@ describe("landing content contracts", () => {
     expect(paths.every((path) => path.startsWith("/images/"))).toBe(true);
   });
 
-  it("describes concrete crew operations instead of generic agency promises", () => {
-    expect(advantages.map(({ title }) => title)).toEqual([
-      "Фиксируем состав и смены",
-      "Подтверждаем выход",
-      "Остаёмся на связи",
-      "Находим замену",
-    ]);
-    expect(processSteps.map(({ title }) => title)).toEqual(["Бриф", "Состав и смета", "Подтверждение", "Выход команды"]);
-    expect(JSON.stringify({ advantages, services, processSteps })).not.toMatch(
-      /индивидуальн|профессиональн|качественн|комфорт|оперативн/i,
-    );
-  });
-
   it("keeps the exact stable service ids and replacement paths", () => {
     expect(services.map((service) => service.id)).toEqual([
-      "hostess",
-      "promoters",
       "helpers",
+      "promoters",
+      "hostess",
       "waiters",
       "coordinators",
       "cloakroom",
-      "registrars",
-      "animators",
+      "security",
+      "riggers",
     ]);
+    expect(services.map((service) => service.price)).toEqual([700, 750, 850, 650, 850, 550, 700, 700]);
     expect(services.map((service) => service.image)).toEqual([
-      "/images/services/service-hostess.webp",
-      "/images/services/service-promoters.webp",
       "/images/services/service-helpers.webp",
+      "/images/services/service-promoters.webp",
+      "/images/services/service-hostess.webp",
       "/images/services/service-waiters.webp",
       "/images/services/service-coordinators.webp",
       "/images/services/service-cloakroom.webp",
-      "/images/services/service-registrars.webp",
-      "/images/services/service-animators.webp",
+      "/images/services/service-security.jpg",
+      "/images/services/service-riggers.jpg",
     ]);
   });
 

@@ -4,19 +4,35 @@ import Hero from "@/components/Hero";
 import { siteConfig } from "@/data/site";
 
 describe("Hero", () => {
-  it("provides the exact Hero copy, sole top-level heading, image alt, and contact CTA", () => {
-    const { container } = render(<Hero />);
+  it("presents the event team offer over the configured background image", () => {
+    render(<Hero />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
-    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/^Люди, на которых держится событие$/);
-    expect(
-      screen.getByText("Подберём и выведем на площадку хостес, координаторов, регистраторов и линейный персонал в Москве"),
-    ).toBeInTheDocument();
-    expect(screen.getByRole("img", { name: /команда event crew на мероприятии/i })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Рассчитать команду" })).toHaveAttribute("href", "#contact");
-    expect(screen.getByText("Москва / состав от 2 человек / на связи в день события")).toBeInTheDocument();
-    expect(container.querySelector('[data-crew-line="hero"]')).toBeInTheDocument();
-    expect(container.querySelectorAll("[data-hero-stage]")).toHaveLength(4);
+    expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/^Персонал для вашего мероприятия$/);
+    expect(screen.getByText("Хелперы, хостес, промоутеры, официанты и другой персонал.")).toBeInTheDocument();
+    expect(screen.getByRole("img", { name: /подготовка площадки event crew/i })).toHaveAttribute(
+      "src",
+      expect.stringContaining(encodeURIComponent(siteConfig.heroImage)),
+    );
+  });
+
+  it("offers direct navigation to the contact form and services", () => {
+    render(<Hero />);
+
+    expect(screen.getByRole("link", { name: "Рассчитать стоимость" })).toHaveAttribute("href", "#contact");
+    expect(screen.getByRole("link", { name: "Посмотреть услуги" })).toHaveAttribute("href", "/personnel");
+  });
+
+  it("shows the three approved proof points on arrival", () => {
+    render(<Hero />);
+
+    const metrics = screen.getByRole("list", { name: "EVENT CREW в цифрах" });
+    expect(within(metrics).getByText("100+")).toBeInTheDocument();
+    expect(within(metrics).getByText("мероприятий")).toBeInTheDocument();
+    expect(within(metrics).getByText("400+")).toBeInTheDocument();
+    expect(within(metrics).getByText("база сотрудников")).toBeInTheDocument();
+    expect(within(metrics).getByText("15 мин")).toBeInTheDocument();
+    expect(within(metrics).getByText("первичный расчёт")).toBeInTheDocument();
   });
 });
 

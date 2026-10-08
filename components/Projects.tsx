@@ -17,25 +17,21 @@ const imageSizes: Record<ProjectSize, string> = {
 
 export default function Projects() {
   return (
-    <section aria-labelledby="projects-heading" className="mx-auto max-w-[var(--content-width)] px-[var(--page-gutter)] py-24 sm:py-32" id="projects">
+    <section aria-labelledby="projects-heading" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12" id="projects">
       <Reveal>
         <div id="projects-heading">
-          <SectionHeading eyebrow="Полевые записи" title="Команды на площадке" description="Размер и роли меняются вместе со сценарием. В каждом проекте показываем, кто отвечал за работу с гостями." />
+          <SectionHeading eyebrow="На площадке" title="Проекты" description="Каждый состав команды зависит от сценария, пространства и того, как гости двигаются по событию." />
         </div>
       </Reveal>
-      <div className="mt-12 grid auto-rows-[28rem] gap-x-5 gap-y-10 sm:grid-cols-2 lg:mt-16 lg:grid-cols-4 lg:auto-rows-[30rem]">
+      <div className="mt-10 grid auto-rows-[17rem] gap-4 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4 lg:auto-rows-[16rem]">
         {projects.map((project, index) => (
           <Reveal className={sizeClasses[project.size]} delay={Math.min(index * 0.05, 0.25)} key={project.id}>
-            <article aria-label={project.title} className="group grid h-full grid-rows-[minmax(0,1fr)_auto] border-t border-black/20 pt-3">
-              <div className="min-h-0 overflow-hidden bg-black">
-                <Image alt={project.alt} className="h-full w-full object-cover transition-transform duration-200 group-hover:scale-[1.015]" height={900} sizes={imageSizes[project.size]} src={project.image} width={1200} />
-              </div>
-              <div className="grid gap-2 border-b border-black/15 py-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end" data-testid="project-caption">
-                <div>
-                  <p className="text-xs font-extrabold uppercase tracking-[0.12em] text-[color:var(--muted)]">{project.type}</p>
-                  <h3 className="mt-2 text-2xl font-black leading-none tracking-[-0.035em]">{project.title}</h3>
-                </div>
-                <p className="flex flex-wrap gap-x-2 text-xs font-bold uppercase leading-relaxed tracking-[0.08em] text-[color:var(--muted)]">
+            <article aria-label={project.title} className="group relative h-full overflow-hidden bg-black text-white">
+              <Image alt={project.alt} className="h-full w-full object-cover opacity-85 transition-transform duration-500 group-hover:scale-[1.04]" height={900} sizes={imageSizes[project.size]} src={project.image} width={1200} />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black via-black/70 to-transparent p-5 pt-20 sm:p-6">
+                <p className="text-xs font-black uppercase tracking-[0.12em] text-[color:var(--accent)]">{project.type}</p>
+                <h3 className="mt-2 text-2xl font-black uppercase tracking-[-0.05em]">{project.title}</h3>
+                <p className="mt-3 flex flex-wrap gap-x-2 text-sm leading-relaxed text-white/70">
                   {project.roles.map((role, roleIndex) => (
                     <span key={role}>
                       {roleIndex > 0 && <span aria-hidden="true"> · </span>}

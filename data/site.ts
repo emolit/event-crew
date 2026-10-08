@@ -1,6 +1,6 @@
 export interface NavItem {
   label: string;
-  href: `#${string}`;
+  href: string;
 }
 
 export interface ContactItem {
@@ -26,14 +26,14 @@ export interface SiteConfig {
 export const siteConfig = {
   brand: "EVENT CREW",
   tagline: "STAFF FOR EVENTS",
-  heroImage: "/images/hero-event.webp",
+  heroImage: "/images/hero-backstage.jpg",
   logo: "/images/brand/event-crew-logo.png",
   nav: [
-    { label: "Услуги", href: "#services" },
-    { label: "Контроль", href: "#advantages" },
-    { label: "Проекты", href: "#projects" },
-    { label: "Процесс", href: "#process" },
-    { label: "Контакты", href: "#contacts" },
+    { label: "Персонал", href: "/personnel" },
+    { label: "Почему мы", href: "/#advantages" },
+    { label: "Проекты", href: "/#projects" },
+    { label: "Как мы работаем", href: "/#process" },
+    { label: "Контакты", href: "/#contacts" },
   ],
   contacts: {
     // Demonstrational, not verified business contact.

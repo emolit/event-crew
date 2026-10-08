@@ -24,10 +24,22 @@ const errorMessages: Partial<Record<FormField, string>> = {
   phone: "Укажите корректный телефон",
 };
 
-const successCopy = "Заявка отправлена. Мы свяжемся с вами по указанному контакту.";
-const failureCopy = "Не удалось отправить заявку. Проверьте соединение и повторите отправку.";
+const successCopy = "Спасибо! Заявка отправлена. Скоро мы свяжемся с вами.";
+const failureCopy = "Не удалось отправить заявку. Попробуйте еще раз.";
 
-export default function ContactForm() {
+interface ContactFormProps {
+  description?: string;
+  eyebrow?: string;
+  id?: string;
+  title?: string;
+}
+
+export default function ContactForm({
+  description = "Расскажите о событии — подберём команду под задачи, формат и тайминг вашего мероприятия в Москве.",
+  eyebrow = "EVENT CREW",
+  id = "contact",
+  title = "Нужен персонал на мероприятие?",
+}: ContactFormProps = {}) {
   const formRef = useRef<HTMLFormElement>(null);
   const [values, setValues] = useState<FormValues>(emptyValues);
   const [errors, setErrors] = useState<Partial<Record<FormField, string>>>({});
@@ -120,21 +132,22 @@ export default function ContactForm() {
   }
 
   return (
-    <section aria-labelledby="contact-heading" className="scroll-mt-24 bg-[color:var(--foreground)] text-[color:var(--background)] [--muted:var(--muted-on-dark)]" id="contact">
-      <div className="mx-auto grid max-w-[var(--content-width)] gap-12 px-[var(--page-gutter)] py-24 sm:py-32 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start lg:gap-20">
-        <div className="crew-line pl-6">
-          <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--accent)]">Заявка / Москва</p>
-          <h2 className="mt-5 max-w-xl text-5xl font-black leading-[0.88] tracking-[-0.045em] sm:text-6xl lg:text-7xl" id="contact-heading">
-            Расскажите о событии
+    <section aria-labelledby={`${id}-heading`} className="scroll-mt-24 bg-[color:var(--accent)] text-[color:var(--foreground)]" id={id}>
+      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-start lg:gap-16 lg:px-12">
+        <div>
+          <p className="text-sm font-black uppercase tracking-[0.14em]">{eyebrow}</p>
+          <h2 className="mt-4 max-w-xl text-4xl font-black uppercase tracking-[-0.06em] sm:text-5xl lg:text-6xl" id={`${id}-heading`}>
+            {title}
           </h2>
-          <p className="mt-7 max-w-lg text-lg leading-relaxed text-[color:var(--muted)]">Напишите дату, адрес, часы работы и нужные роли. Если состав пока неясен, опишите задачи на площадке.</p>
-          <p className="mt-10 border-t border-white/20 pt-5 text-sm font-extrabold uppercase tracking-[0.1em] text-[color:var(--accent)]">Вы получите состав, график и стоимость</p>
+          <p className="mt-6 max-w-lg text-lg leading-relaxed">
+            {description}
+          </p>
         </div>
 
-        <form className="bg-[color:var(--background)] p-5 text-[color:var(--foreground)] sm:p-8" noValidate onSubmit={handleSubmit} ref={formRef}>
-          <p className="mb-5 text-sm font-semibold">* обозначает обязательные поля</p>
+        <form className="bg-[color:var(--background)] p-5 shadow-xl shadow-black/10 sm:p-8" noValidate onSubmit={handleSubmit} ref={formRef}>
+          <p className="mb-5 text-sm font-semibold">* — обязательные поля</p>
           {validationSummary ? (
-            <p aria-live="assertive" className="mb-5 border-l-4 border-[color:var(--danger)] pl-3 font-bold text-[color:var(--danger)]" role="alert">
+            <p aria-live="assertive" className="mb-5 border-l-4 border-red-700 pl-3 font-bold text-red-800" role="alert">
               {validationSummary}
             </p>
           ) : null}
@@ -180,24 +193,24 @@ export default function ContactForm() {
             <input autoComplete="off" className="sr-only" id="website" name="website" onChange={(event) => updateField("website", event.target.value)} tabIndex={-1} type="text" value={values.website} />
           </div>
 
-          <button className="mt-7 inline-flex min-h-12 w-full items-center justify-center bg-[color:var(--accent)] px-6 text-sm font-black uppercase tracking-[0.08em] text-[color:var(--foreground)] transition-transform duration-150 hover:-translate-y-0.5 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-70" disabled={status === "submitting"} type="submit">
+          <button className="mt-7 inline-flex min-h-11 w-full items-center justify-center bg-[color:var(--foreground)] px-6 text-sm font-black uppercase tracking-[0.08em] text-[color:var(--background)] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-70" disabled={status === "submitting"} type="submit">
             {status === "submitting" ? "Отправляем…" : "Отправить заявку"}
           </button>
-          {status === "success" ? <p aria-live="polite" className="mt-4 font-bold text-[color:var(--foreground)]" role="status">{successCopy}</p> : null}
-          {status === "error" ? <p aria-live="polite" className="mt-4 font-bold text-[color:var(--danger)]" role="status">{failureCopy}</p> : null}
+          {status === "success" ? <p aria-live="polite" className="mt-4 font-bold text-green-800" role="status">{successCopy}</p> : null}
+          {status === "error" ? <p aria-live="polite" className="mt-4 font-bold text-red-800" role="status">{failureCopy}</p> : null}
         </form>
       </div>
     </section>
   );
 }
 
-const inputClassName = "mt-2 min-h-12 w-full border border-[color:var(--line)] bg-[color:var(--background)] px-3 py-2 text-base outline-none transition-colors focus:border-black focus:ring-2 focus:ring-[color:var(--accent)] aria-[invalid=true]:border-[color:var(--danger)]";
+const inputClassName = "mt-2 min-h-11 w-full border border-black/25 bg-white px-3 py-2 text-base outline-none transition focus:border-black focus:ring-2 focus:ring-[color:var(--accent)] aria-[invalid=true]:border-red-700";
 
 function FieldError({ children, error, id }: { children: React.ReactNode; error?: string; id: string }) {
   return (
     <div>
       {children}
-      {error ? <p className="mt-1 text-sm font-semibold text-[color:var(--danger)]" id={id}>{error}</p> : null}
+      {error ? <p className="mt-1 text-sm font-semibold text-red-800" id={id}>{error}</p> : null}
     </div>
   );
 }

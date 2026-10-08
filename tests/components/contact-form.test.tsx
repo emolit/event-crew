@@ -3,8 +3,8 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import ContactForm from "@/components/ContactForm";
 
-const successCopy = "Заявка отправлена. Мы свяжемся с вами по указанному контакту.";
-const failureCopy = "Не удалось отправить заявку. Проверьте соединение и повторите отправку.";
+const successCopy = "Спасибо! Заявка отправлена. Скоро мы свяжемся с вами.";
+const failureCopy = "Не удалось отправить заявку. Попробуйте еще раз.";
 
 const validValues = {
   name: "Иван",
@@ -31,13 +31,6 @@ afterEach(() => {
 });
 
 describe("ContactForm", () => {
-  it("tells the client what the estimate contains", () => {
-    render(<ContactForm />);
-
-    expect(screen.getByRole("heading", { level: 2, name: "Расскажите о событии" })).toBeInTheDocument();
-    expect(screen.getByText("Вы получите состав, график и стоимость")).toBeInTheDocument();
-  });
-
   it("renders labeled fields, service options, and an inaccessible honeypot", () => {
     render(<ContactForm />);
 
@@ -57,7 +50,7 @@ describe("ContactForm", () => {
   it("marks name and phone as required and explains the visible asterisk", () => {
     render(<ContactForm />);
 
-    expect(screen.getByText("* обозначает обязательные поля")).toBeVisible();
+    expect(screen.getByText("* — обязательные поля")).toBeVisible();
     for (const label of ["Имя", "Телефон"]) {
       expect(screen.getByLabelText(label)).toBeRequired();
       expect(screen.getByLabelText(label)).toHaveAttribute("aria-required", "true");

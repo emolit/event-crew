@@ -5,26 +5,24 @@ import { advantages } from "@/data/advantages";
 export default function Advantages() {
   return (
     <section aria-labelledby="advantages-heading" className="bg-[color:var(--foreground)] text-[color:var(--background)] [--muted:var(--muted-on-dark)]" id="advantages">
-      <div className="mx-auto max-w-[var(--content-width)] px-[var(--page-gutter)] py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12">
         <Reveal>
           <div id="advantages-heading">
-            <SectionHeading eyebrow="Контроль площадки" title="Что держим под контролем" description="До события вы получаете согласованный состав. В день смены координатор следит за выходом команды." />
+            <SectionHeading eyebrow="Спокойная организация" title="Почему мы" description="Берём на себя подбор, контроль и быструю реакцию, чтобы команда была готова к началу события." />
           </div>
         </Reveal>
         <p className="mt-6 text-sm font-black uppercase tracking-[0.12em] text-[color:var(--accent)]">Работаем с мероприятиями в Москве</p>
-        <ul aria-label="Контроль выхода команды" className="mt-12 border-t border-white/20 lg:mt-16">
+        <div className="mt-10 grid gap-px overflow-hidden border border-white/15 bg-white/15 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4">
           {advantages.map((advantage, index) => (
-            <li className="border-b border-white/20" key={advantage.id}>
-              <Reveal>
-                <article className="grid gap-4 py-7 md:grid-cols-[4rem_minmax(14rem,0.85fr)_minmax(0,1.15fr)] md:items-start">
-                  <span aria-hidden="true" className="text-xs font-bold tracking-[0.14em] text-[color:var(--accent)]">CHECK {index + 1}</span>
-                  <h3 className="text-2xl font-black leading-none tracking-[-0.03em]">{advantage.title}</h3>
-                  <p className="max-w-xl leading-relaxed text-white/70">{advantage.description}</p>
-                </article>
-              </Reveal>
-            </li>
+            <Reveal className="bg-[color:var(--foreground)]" delay={Math.min(index * 0.06, 0.24)} key={advantage.id}>
+              <article className="min-h-56 p-6 sm:p-7">
+                <span aria-hidden="true" className="text-sm font-black tracking-[0.12em] text-[color:var(--accent)]">0{index + 1}</span>
+                <h3 className="mt-12 text-2xl font-black uppercase tracking-[-0.05em]">{advantage.title}</h3>
+                <p className="mt-4 leading-relaxed text-white/65">{advantage.description}</p>
+              </article>
+            </Reveal>
           ))}
-        </ul>
+        </div>
       </div>
     </section>
   );

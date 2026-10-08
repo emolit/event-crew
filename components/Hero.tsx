@@ -1,24 +1,51 @@
 import Image from "next/image";
 import { siteConfig } from "@/data/site";
 
+const metrics = [
+  { value: "100+", label: "мероприятий" },
+  { value: "400+", label: "база сотрудников" },
+  { value: "15 мин", label: "первичный расчёт" },
+] as const;
+
 export default function Hero() {
   return (
-    <section className="relative mx-auto grid min-h-[100svh] max-w-[var(--content-width)] items-end gap-8 overflow-hidden px-[var(--page-gutter)] pb-8 pt-28 lg:grid-cols-12 lg:gap-6 lg:pb-14">
-      <div className="relative z-10 min-w-0 pb-2 lg:col-span-7 lg:pb-12">
-        <p className="hero-enter hero-enter-1 mb-6 text-xs font-extrabold uppercase tracking-[0.18em] text-[color:var(--muted)]" data-hero-stage="1">{siteConfig.tagline} / MOSCOW</p>
-        <div className="crew-line hero-enter hero-enter-2 pl-5 sm:pl-7" data-crew-line="hero" data-hero-stage="2">
-          <h1 className="max-w-4xl text-[clamp(3.25rem,11vw,7.9rem)] font-black leading-[0.82] tracking-[-0.055em]">Люди, на которых держится событие</h1>
+    <section className="relative isolate min-h-[100svh] overflow-hidden bg-black text-white">
+      <Image
+        alt="Подготовка площадки EVENT CREW"
+        className="-z-20 object-cover object-[50%_55%]"
+        fill
+        priority
+        sizes="100vw"
+        src={siteConfig.heroImage}
+      />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,0.86)_0%,rgba(0,0,0,0.66)_48%,rgba(0,0,0,0.34)_100%)]" />
+      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-10 h-1/2 bg-gradient-to-t from-black/80 to-transparent" />
+
+      <div className="mx-auto flex min-h-[100svh] max-w-7xl flex-col px-5 pb-5 pt-28 sm:px-8 sm:pb-7 lg:px-12 lg:pt-32">
+        <div className="flex flex-1 items-center py-5 sm:py-8">
+          <div className="max-w-4xl">
+            <p className="mb-4 text-xs font-black uppercase tracking-[0.2em] text-white/70 sm:text-sm">{siteConfig.tagline}</p>
+            <h1 className="text-[clamp(2.5rem,8vw,5.5rem)] font-black uppercase leading-[0.86] tracking-[-0.065em]">Персонал для вашего мероприятия</h1>
+            <p className="mt-5 max-w-2xl text-base font-medium leading-relaxed text-white/85 sm:text-xl">Хелперы, хостес, промоутеры, официанты и другой персонал.</p>
+            <div className="mt-6 flex flex-wrap gap-3 sm:mt-8">
+              <a className="inline-flex min-h-11 items-center rounded-sm bg-[color:var(--accent)] px-5 text-xs font-black uppercase tracking-[0.08em] text-[color:var(--foreground)] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-white sm:px-6 sm:text-sm" href="#contact">
+                Рассчитать стоимость
+              </a>
+              <a className="inline-flex min-h-11 items-center rounded-sm border border-white/75 bg-black/20 px-5 text-xs font-black uppercase tracking-[0.08em] text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-black focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-white sm:px-6 sm:text-sm" href="/personnel">
+                Посмотреть услуги
+              </a>
+            </div>
+          </div>
         </div>
-        <div className="hero-enter hero-enter-3 mt-8 grid gap-6 border-t border-black/15 pt-6 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end" data-hero-stage="3">
-          <p className="max-w-xl text-base leading-relaxed text-[color:var(--muted)] sm:text-lg">Подберём и выведем на площадку хостес, координаторов, регистраторов и линейный персонал в Москве</p>
-          <a className="inline-flex min-h-12 items-center justify-center rounded-sm bg-[color:var(--accent)] px-6 text-sm font-extrabold uppercase tracking-[0.08em] transition-transform duration-150 hover:-translate-y-0.5 active:scale-[0.97]" href="#contact">
-            Рассчитать команду
-          </a>
-        </div>
-      </div>
-      <div className="hero-enter hero-enter-4 relative min-h-[22rem] min-w-0 overflow-hidden bg-black sm:min-h-[32rem] lg:col-span-5 lg:min-h-[72svh]" data-hero-stage="4">
-        <Image alt="Команда EVENT CREW на мероприятии" className="object-cover" fill priority sizes="(min-width: 1024px) 42vw, 100vw" src={siteConfig.heroImage} />
-        <p className="absolute bottom-0 left-0 right-0 border-t border-white/20 bg-black/75 p-4 text-xs font-bold uppercase leading-relaxed tracking-[0.08em] text-white">Москва / состав от 2 человек / на связи в день события</p>
+
+        <ul aria-label="EVENT CREW в цифрах" className="grid grid-cols-3 border-y border-white/25 bg-black/25 backdrop-blur-sm">
+          {metrics.map((metric, index) => (
+            <li className={`min-w-0 px-2 py-3 sm:px-6 sm:py-5 lg:px-8 ${index > 0 ? "border-l border-white/25" : ""}`} key={metric.label}>
+              <p className="whitespace-nowrap text-[clamp(1.4rem,4.4vw,3.25rem)] font-black leading-none tracking-[-0.05em]">{metric.value}</p>
+              <p className="mt-1 text-[0.6rem] font-bold uppercase leading-tight tracking-[0.06em] text-white/75 sm:mt-2 sm:text-xs">{metric.label}</p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
