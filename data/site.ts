@@ -7,6 +7,7 @@ export interface ContactItem {
   label: string;
   value: string;
   href: string;
+  icon: "phone" | "telegram" | "whatsapp" | "email";
 }
 
 export interface SiteConfig {
@@ -36,14 +37,10 @@ export const siteConfig = {
     { label: "Контакты", href: "/#contacts" },
   ],
   contacts: {
-    // Demonstrational, not verified business contact.
-    phone: { label: "Телефон", value: "+7 (000) 000-00-00", href: "tel:+70000000000" },
-    // Demonstrational, not verified business contact.
-    telegram: { label: "Telegram", value: "@eventcrew", href: "https://t.me/eventcrew" },
-    // Demonstrational, not verified business contact.
-    whatsapp: { label: "WhatsApp", value: "+7 (000) 000-00-00", href: "https://wa.me/70000000000" },
-    // Demonstrational, not verified business contact.
-    email: { label: "Email", value: "hello@eventcrew.ru", href: "mailto:hello@eventcrew.ru" },
+    phone: { label: "Телефон", value: "+7 985 197-56-63", href: "tel:+79851975663", icon: "phone" },
+    telegram: { label: "Telegram", value: "@EVENT_CREW", href: "https://t.me/EVENT_CREW", icon: "telegram" },
+    whatsapp: { label: "WhatsApp", value: "+7 985 197-56-63", href: "https://wa.me/79851975663", icon: "whatsapp" },
+    email: { label: "Email", value: "eventcrew@bk.ru", href: "mailto:eventcrew@bk.ru", icon: "email" },
   },
 } as const satisfies SiteConfig;
 

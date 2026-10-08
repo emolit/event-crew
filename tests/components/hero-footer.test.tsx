@@ -37,7 +37,7 @@ describe("Hero", () => {
 });
 
 describe("Footer", () => {
-  it("renders all configured contact channels and the approved copyright", () => {
+  it("renders the verified contact channels as actionable links", () => {
     render(<Footer />);
 
     expect(screen.getByRole("contentinfo")).toHaveAttribute("id", "contacts");
@@ -52,14 +52,25 @@ describe("Footer", () => {
         item.href,
       );
     }
-    for (const contact of Object.values(siteConfig.contacts)) {
-      expect(screen.getByRole("link", { name: new RegExp(contact.label, "i") })).toHaveAttribute("href", contact.href);
+    const phone = screen.getByRole("link", { name: /телефон.*\+7 985 197-56-63/i });
+    const telegram = screen.getByRole("link", { name: /telegram.*@event_crew/i });
+    const whatsapp = screen.getByRole("link", { name: /whatsapp.*\+7 985 197-56-63/i });
+    const email = screen.getByRole("link", { name: /email.*eventcrew@bk\.ru/i });
+
+    expect(phone).toHaveAttribute("href", "tel:+79851975663");
+    expect(telegram).toHaveAttribute("href", "https://t.me/EVENT_CREW");
+    expect(whatsapp).toHaveAttribute("href", "https://wa.me/79851975663");
+    expect(email).toHaveAttribute("href", "mailto:eventcrew@bk.ru");
+
+    for (const contactLink of [phone, telegram, whatsapp, email]) {
+      expect(contactLink.querySelector("svg")).toBeInTheDocument();
     }
+
     expect(screen.getByText("© 2026 EVENT CREW. Все права защищены.")).toBeInTheDocument();
 
-    expect(screen.getByRole("link", { name: /telegram/i })).toHaveAttribute("target", "_blank");
-    expect(screen.getByRole("link", { name: /whatsapp/i })).toHaveAttribute("rel", expect.stringContaining("noopener"));
-    expect(screen.getByRole("link", { name: /телефон/i })).not.toHaveAttribute("target");
-    expect(screen.getByRole("link", { name: /email/i })).not.toHaveAttribute("target");
+    expect(telegram).toHaveAttribute("target", "_blank");
+    expect(whatsapp).toHaveAttribute("rel", expect.stringContaining("noopener"));
+    expect(phone).not.toHaveAttribute("target");
+    expect(email).not.toHaveAttribute("target");
   });
 });
