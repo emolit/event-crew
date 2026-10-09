@@ -30,12 +30,12 @@ export const projects = [
     size: "standard",
   },
   {
-    id: "project-03",
-    title: "Выставочная площадка",
-    type: "Выставка",
-    roles: ["Промоутеры", "Хелперы"],
-    image: "/images/projects/project-03.webp",
-    alt: "Команда персонала работает на выставочной площадке",
+    id: "project-06",
+    title: "Вечерний гала-ужин",
+    type: "Гала-ужин",
+    roles: ["Официанты", "Гардеробщики"],
+    image: "/images/projects/project-06.webp",
+    alt: "Официанты обслуживают гостей на вечернем гала-ужине",
     size: "tall",
   },
   {
@@ -55,15 +55,6 @@ export const projects = [
     image: "/images/projects/project-05.webp",
     alt: "Координатор помогает гостям на городском событии",
     size: "wide",
-  },
-  {
-    id: "project-06",
-    title: "Вечерний гала-ужин",
-    type: "Гала-ужин",
-    roles: ["Официанты", "Гардеробщики"],
-    image: "/images/projects/project-06.webp",
-    alt: "Официанты обслуживают гостей на вечернем гала-ужине",
-    size: "tall",
   },
 ] as const satisfies readonly Project[];
 

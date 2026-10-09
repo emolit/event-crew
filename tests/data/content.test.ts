@@ -10,7 +10,7 @@ describe("landing content contracts", () => {
   it("provides the complete landing content", () => {
     expect(services).toHaveLength(8);
     expect(advantages).toHaveLength(4);
-    expect(projects).toHaveLength(6);
+    expect(projects).toHaveLength(5);
     expect(processSteps.map((step) => step.number)).toEqual(["01", "02", "03", "04"]);
     expect(siteConfig.brand).toBe("EVENT CREW");
   });
@@ -44,22 +44,22 @@ describe("landing content contracts", () => {
     ]);
   });
 
-  it("keeps project-01 through project-06 on their exact replacement paths", () => {
+  it("replaces the exhibition with one gala dinner while keeping stable image paths", () => {
     expect(projects.map((project) => project.id)).toEqual([
       "project-01",
       "project-02",
-      "project-03",
+      "project-06",
       "project-04",
       "project-05",
-      "project-06",
     ]);
     expect(projects.map((project) => project.image)).toEqual([
       "/images/projects/project-01.webp",
       "/images/projects/project-02.webp",
-      "/images/projects/project-03.webp",
+      "/images/projects/project-06.webp",
       "/images/projects/project-04.webp",
       "/images/projects/project-05.webp",
-      "/images/projects/project-06.webp",
     ]);
+    expect(projects.filter((project) => project.title === "Вечерний гала-ужин")).toHaveLength(1);
+    expect(projects.map((project) => project.title)).not.toContain("Выставочная площадка");
   });
 });

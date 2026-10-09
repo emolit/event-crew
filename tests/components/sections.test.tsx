@@ -46,7 +46,7 @@ describe("data-driven content sections", () => {
     const section = screen.getByRole("region", { name: /проекты/i });
     expect(section).toHaveAttribute("id", "projects");
     expect(within(section).getByRole("heading", { level: 2 })).toBeInTheDocument();
-    expect(within(section).getAllByRole("article")).toHaveLength(6);
+    expect(within(section).getAllByRole("article")).toHaveLength(5);
 
     for (const project of projects) {
       const projectCard = within(section).getByRole("article", { name: project.title });

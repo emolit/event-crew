@@ -4,6 +4,24 @@ import Header from "@/components/Header";
 import { siteConfig } from "@/data/site";
 
 describe("Header", () => {
+  it("uses the selected floating graphite treatment", () => {
+    render(<Header />);
+
+    const header = screen.getByRole("banner");
+    expect(header).toHaveClass("px-3", "pt-3", "text-white");
+    expect(header.firstElementChild).toHaveClass(
+      "rounded-sm",
+      "border-white/15",
+      "bg-[color:var(--foreground)]/90",
+      "backdrop-blur-xl",
+    );
+    expect(screen.getByRole("button", { name: /открыть меню/i })).toHaveClass(
+      "border-white/20",
+      "bg-white/5",
+      "text-white",
+    );
+  });
+
   it("keeps the compact menu through laptop widths where full navigation would clip", () => {
     render(<Header />);
 

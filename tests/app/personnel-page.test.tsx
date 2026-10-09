@@ -4,12 +4,13 @@ import PersonnelPage from "@/app/personnel/page";
 import { services } from "@/data/services";
 
 describe("Personnel page", () => {
-  it("keeps the light header navigation dark and readable", () => {
+  it("keeps the floating graphite header readable", () => {
     render(<PersonnelPage />);
 
-    expect(screen.getByRole("banner")).toHaveClass("text-[color:var(--foreground)]");
+    expect(screen.getByRole("banner")).toHaveClass("text-white");
     expect(screen.getByRole("button", { name: /открыть меню/i })).toHaveClass(
-      "bg-[color:var(--foreground)]",
+      "border-white/20",
+      "bg-white/5",
       "text-white",
     );
   });
