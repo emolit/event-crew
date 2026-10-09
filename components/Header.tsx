@@ -91,7 +91,7 @@ export default function Header() {
             ))}
           </nav>
 
-          <Link className="hidden min-h-11 items-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)] xl:inline-flex" href="/#contact">
+          <Link className="hidden min-h-11 items-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)] xl:inline-flex" href="#contacts">
             Оставить заявку
           </Link>
 
@@ -142,7 +142,7 @@ export default function Header() {
                     </li>
                   ))}
                   <li className="pt-3">
-                    <Link className="flex min-h-11 items-center justify-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)]" href="/#contact" onClick={() => closeMenu(true)}>
+                    <Link className="flex min-h-11 items-center justify-center rounded-sm bg-[color:var(--accent)] px-5 text-sm font-black uppercase tracking-[0.08em] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)]" href="#contacts" onClick={() => closeMenu(true)}>
                       Оставить заявку
                     </Link>
                   </li>

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import PersonnelGrid from "@/components/PersonnelGrid";
@@ -27,12 +26,6 @@ export default function PersonnelPage() {
           </div>
         </section>
 
-        <ContactForm
-          description="Опишите задачу — предложим подходящий состав команды и сделаем первичный расчёт. Пока заявки отправляются в Telegram."
-          eyebrow="Особая задача"
-          id="personnel-contact"
-          title="Не нашли, что искали?"
-        />
       </main>
       <Footer />
     </div>

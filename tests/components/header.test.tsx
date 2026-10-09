@@ -26,7 +26,7 @@ describe("Header", () => {
     for (const item of siteConfig.nav) {
       expect(navigation).toHaveTextContent(item.label);
     }
-    expect(screen.getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "/#contact");
+    expect(screen.getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "#contacts");
     expect(within(navigation).getByRole("link", { name: "Персонал" })).toHaveAttribute("href", "/personnel");
 
     const toggle = screen.getByRole("button", { name: /открыть меню/i });
@@ -38,6 +38,7 @@ describe("Header", () => {
     expect(document.body).toHaveStyle({ overflow: "hidden" });
 
     const mobileMenu = screen.getByRole("dialog", { name: /мобильная навигация/i });
+    expect(within(mobileMenu).getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "#contacts");
     expect(mobileMenu).toHaveClass("fixed", "inset-0", "overflow-y-auto");
     expect(screen.getByTestId("page-main")).toHaveAttribute("inert");
     expect(screen.getByTestId("page-footer")).toHaveAttribute("inert");

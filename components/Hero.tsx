@@ -28,7 +28,7 @@ export default function Hero() {
             <h1 className="text-[clamp(2.5rem,8vw,5.5rem)] font-black uppercase leading-[0.86] tracking-[-0.065em]">Персонал для вашего мероприятия</h1>
             <p className="mt-5 max-w-2xl text-base font-medium leading-relaxed text-white/85 sm:text-xl">Хелперы, хостес, промоутеры, официанты и другой персонал.</p>
             <div className="mt-6 flex flex-wrap gap-3 sm:mt-8">
-              <a className="inline-flex min-h-11 items-center rounded-sm bg-[color:var(--accent)] px-5 text-xs font-black uppercase tracking-[0.08em] text-[color:var(--foreground)] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-white sm:px-6 sm:text-sm" href="#contact">
+              <a className="inline-flex min-h-11 items-center rounded-sm bg-[color:var(--accent)] px-5 text-xs font-black uppercase tracking-[0.08em] text-[color:var(--foreground)] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-white sm:px-6 sm:text-sm" href="#contacts">
                 Рассчитать стоимость
               </a>
               <a className="inline-flex min-h-11 items-center rounded-sm border border-white/75 bg-black/20 px-5 text-xs font-black uppercase tracking-[0.08em] text-white backdrop-blur-sm transition-colors hover:bg-white hover:text-black focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-white sm:px-6 sm:text-sm" href="/personnel">

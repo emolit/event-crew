@@ -70,7 +70,7 @@ describe("Personnel page", () => {
       "leading-7",
       "text-black/75",
     );
-    expect(within(card).getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "#personnel-contact");
+    expect(within(card).getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "#contacts");
   });
 
   it("flips an open card back when the same card is activated again without showing a close icon", async () => {
@@ -104,11 +104,12 @@ describe("Personnel page", () => {
     expect(within(card).getByRole("button", { name: "Свернуть карточку: Хелперы" })).toBeInTheDocument();
   });
 
-  it("finishes with the Telegram-backed inquiry form", () => {
+  it("finishes with direct contacts without exposing the inquiry form", () => {
     const { container } = render(<PersonnelPage />);
 
-    expect(screen.getByRole("heading", { level: 2, name: /не нашли, что искали/i })).toBeInTheDocument();
-    expect(container.querySelector("#personnel-contact")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /отправить заявку/i })).toBeInTheDocument();
+    expect(container.querySelector("#personnel-contact")).not.toBeInTheDocument();
+    expect(container.querySelector("#contacts")).toBeInTheDocument();
+    expect(screen.queryByRole("heading", { name: /не нашли, что искали/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /отправить заявку/i })).not.toBeInTheDocument();
   });
 });
