@@ -63,7 +63,13 @@ export default function Footer() {
             <p className="text-[0.65rem] font-black uppercase tracking-[0.16em] text-white/50" id="footer-clients-heading">
               Наши постоянные клиенты
             </p>
-            <div className="mt-3 flex h-16 max-w-52 items-center border border-white/15 bg-white/[0.035] px-4">
+            <a
+              aria-label="TRACE Advertising Group"
+              className="mt-3 flex h-16 max-w-52 items-center border border-white/15 bg-white/[0.035] px-4 transition-[border-color,background-color,transform] hover:-translate-y-0.5 hover:border-[color:var(--accent)] hover:bg-white/[0.07] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]"
+              href="https://trace-group.ru/"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
               <Image
                 alt="TRACE Advertising Group"
                 className="h-auto w-full max-w-44 object-contain"
@@ -72,7 +78,7 @@ export default function Footer() {
                 src="/images/clients/trace-group.png"
                 width={1956}
               />
-            </div>
+            </a>
           </section>
         </div>
 

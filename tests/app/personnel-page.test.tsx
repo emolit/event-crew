@@ -32,6 +32,21 @@ describe("Personnel page", () => {
     expect(within(list).queryByText(/₽\/час/i)).not.toBeInTheDocument();
   });
 
+  it("uses one calm studio treatment and equal proportions for every front card", () => {
+    render(<PersonnelPage />);
+
+    const list = screen.getByRole("list", { name: /виды персонала/i });
+    for (const service of services) {
+      const card = within(list).getByRole("listitem", { name: service.name });
+      const front = within(card).getByRole("button", { name: `Подробнее: ${service.name}` });
+      const portrait = within(card).getByRole("img", { name: service.alt });
+
+      expect(card).toHaveClass("aspect-[4/5]", "min-h-0");
+      expect(front).toHaveClass("bg-[#e8e6df]", "text-black");
+      expect(portrait).toHaveClass("object-contain", "object-bottom");
+    }
+  });
+
   it("aligns crisp borderless SVG arrows with every personnel name", () => {
     render(<PersonnelPage />);
 
@@ -61,25 +76,28 @@ describe("Personnel page", () => {
     }
   });
 
-  it("reveals the selected role with calmer price and description typography", async () => {
+  it("keeps a long waiter description and its inquiry action inside the fixed card", async () => {
     const user = userEvent.setup();
     render(<PersonnelPage />);
 
-    await user.click(screen.getByRole("button", { name: "Подробнее: Хелперы" }));
+    await user.click(screen.getByRole("button", { name: "Подробнее: Официанты" }));
 
-    const card = screen.getByRole("listitem", { name: "Хелперы" });
+    const card = screen.getByRole("listitem", { name: "Официанты" });
     expect(await within(card).findByText("от 700 ₽/час")).toHaveClass(
       "font-serif",
-      "text-4xl",
+      "text-3xl",
       "tracking-[-0.03em]",
     );
-    expect(within(card).getByText(/подготовкой, навигацией и организационными задачами/i)).toHaveClass(
+    expect(within(card).getByText(/внимательное обслуживание гостей/i)).toHaveClass(
       "font-serif",
-      "text-lg",
-      "leading-7",
+      "text-base",
+      "leading-[1.35]",
       "text-black/75",
     );
-    expect(within(card).getByRole("link", { name: /оставить заявку/i })).toHaveAttribute("href", "#contacts");
+    expect(within(card).getByRole("link", { name: /оставить заявку/i })).toHaveClass(
+      "min-h-10",
+      "shrink-0",
+    );
   });
 
   it("flips an open card back when the same card is activated again without showing a close icon", async () => {

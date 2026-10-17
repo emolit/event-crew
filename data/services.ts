@@ -13,7 +13,7 @@ export const services = [
     name: "Хелперы",
     description: "Помогают с подготовкой, навигацией и организационными задачами на площадке.",
     price: 700,
-    image: "/images/services/service-helpers.webp",
+    image: "/images/services/personnel-helpers.webp",
     alt: "Хелпер помогает подготовить площадку мероприятия",
   },
   {
@@ -21,7 +21,7 @@ export const services = [
     name: "Промоутеры",
     description: "Представляют проект, общаются с аудиторией и поддерживают активность на площадке.",
     price: 750,
-    image: "/images/services/service-promoters.webp",
+    image: "/images/services/personnel-promoters.webp",
     alt: "Промоутеры работают с гостями на выставочной площадке",
   },
   {
@@ -29,7 +29,7 @@ export const services = [
     name: "Хостес",
     description: "Встречают гостей, помогают с навигацией и создают первое впечатление о событии.",
     price: 850,
-    image: "/images/services/service-hostess.webp",
+    image: "/images/services/personnel-hostess.webp",
     alt: "Хостес встречает гостей на мероприятии",
   },
   {
@@ -37,7 +37,7 @@ export const services = [
     name: "Официанты",
     description: "Обеспечивают внимательное обслуживание гостей на банкетах и деловых событиях.",
     price: 700,
-    image: "/images/services/service-waiters.webp",
+    image: "/images/services/personnel-waiters.webp",
     alt: "Официант обслуживает гостей на банкете",
   },
   {
@@ -45,7 +45,7 @@ export const services = [
     name: "Координаторы",
     description: "Следят за таймингом, командой и задачами на каждом этапе мероприятия.",
     price: 850,
-    image: "/images/services/service-coordinators.webp",
+    image: "/images/services/personnel-coordinators.webp",
     alt: "Координатор управляет работой команды на площадке",
   },
   {
@@ -53,7 +53,7 @@ export const services = [
     name: "Гардеробщики",
     description: "Организуют работу гардероба и помогают гостям чувствовать себя комфортно.",
     price: 600,
-    image: "/images/services/service-cloakroom.webp",
+    image: "/images/services/personnel-cloakroom.webp",
     alt: "Сотрудник принимает верхнюю одежду в гардеробе",
   },
   {
@@ -61,7 +61,7 @@ export const services = [
     name: "Охрана",
     description: "Поддерживает порядок на площадке, контролирует вход и спокойно реагирует на нестандартные ситуации.",
     price: 700,
-    image: "/images/services/service-security.jpg",
+    image: "/images/services/personnel-security.webp",
     alt: "Сотрудник охраны работает на мероприятии",
   },
   {
@@ -69,7 +69,7 @@ export const services = [
     name: "Грузчики / такелажники",
     description: "Перемещают оборудование, работают с конструкциями и помогают провести монтаж и демонтаж.",
     price: 700,
-    image: "/images/services/service-riggers.jpg",
+    image: "/images/services/personnel-riggers.webp",
     alt: "Такелажник перемещает сценическое оборудование",
   },
 ] as const satisfies readonly Service[];

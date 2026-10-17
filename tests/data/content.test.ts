@@ -33,14 +33,14 @@ describe("landing content contracts", () => {
     ]);
     expect(services.map((service) => service.price)).toEqual([700, 750, 850, 700, 850, 600, 700, 700]);
     expect(services.map((service) => service.image)).toEqual([
-      "/images/services/service-helpers.webp",
-      "/images/services/service-promoters.webp",
-      "/images/services/service-hostess.webp",
-      "/images/services/service-waiters.webp",
-      "/images/services/service-coordinators.webp",
-      "/images/services/service-cloakroom.webp",
-      "/images/services/service-security.jpg",
-      "/images/services/service-riggers.jpg",
+      "/images/services/personnel-helpers.webp",
+      "/images/services/personnel-promoters.webp",
+      "/images/services/personnel-hostess.webp",
+      "/images/services/personnel-waiters.webp",
+      "/images/services/personnel-coordinators.webp",
+      "/images/services/personnel-cloakroom.webp",
+      "/images/services/personnel-security.webp",
+      "/images/services/personnel-riggers.webp",
     ]);
   });
 

@@ -57,7 +57,11 @@ describe("Footer", () => {
 
     const clients = screen.getByRole("region", { name: "Наши постоянные клиенты" });
     expect(clients).toBeInTheDocument();
-    expect(within(clients).getByRole("img", { name: /trace advertising group/i })).toHaveAttribute(
+    const traceLink = within(clients).getByRole("link", { name: /trace advertising group/i });
+    expect(traceLink).toHaveAttribute("href", "https://trace-group.ru/");
+    expect(traceLink).toHaveAttribute("target", "_blank");
+    expect(traceLink).toHaveAttribute("rel", expect.stringContaining("noopener"));
+    expect(within(traceLink).getByRole("img", { name: /trace advertising group/i })).toHaveAttribute(
       "src",
       expect.stringContaining("trace-group.png"),
     );
