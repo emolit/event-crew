@@ -32,7 +32,7 @@ describe("Personnel page", () => {
     expect(within(list).queryByText(/₽\/час/i)).not.toBeInTheDocument();
   });
 
-  it("reserves the same caption area for short and multiline personnel names", () => {
+  it("aligns crisp borderless SVG arrows with every personnel name", () => {
     render(<PersonnelPage />);
 
     const list = screen.getByRole("list", { name: /виды персонала/i });
@@ -41,15 +41,23 @@ describe("Personnel page", () => {
       expect(within(card).getByTestId(`personnel-caption-${service.id}`)).toHaveClass(
         "grid",
         "min-h-28",
-        "grid-cols-[minmax(0,1fr)_2.75rem]",
         "items-end",
       );
+      expect(within(card).getByTestId(`personnel-caption-${service.id}`)).toHaveStyle({
+        gridTemplateColumns: "minmax(0, 1fr) 1.5rem",
+      });
       expect(within(card).getByText(service.name)).toHaveClass(
         "min-w-0",
         "break-normal",
         "text-lg",
         "leading-[0.95]",
       );
+      const arrow = within(card).getByTestId(`personnel-arrow-${service.id}`);
+      expect(arrow).not.toHaveClass("border");
+      const icon = arrow.querySelector("svg");
+      expect(icon).toHaveAttribute("viewBox", "0 0 24 24");
+      expect(icon).toHaveClass("size-6");
+      expect(arrow).not.toHaveTextContent("↗");
     }
   });
 

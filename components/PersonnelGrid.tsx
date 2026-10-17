@@ -63,9 +63,17 @@ export default function PersonnelGrid() {
                 >
                   <Image alt={service.alt} className="object-cover transition-transform duration-500 group-hover:scale-[1.04]" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" src={service.image} />
                   <span aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black via-black/10 to-black/5" />
-                  <span className="absolute inset-x-0 bottom-0 grid min-h-28 grid-cols-[minmax(0,1fr)_2.75rem] items-end gap-3 p-5 sm:p-6" data-testid={`personnel-caption-${service.id}`}>
+                  <span
+                    className="absolute inset-x-0 bottom-0 grid min-h-28 items-end gap-3 p-5 sm:p-6"
+                    data-testid={`personnel-caption-${service.id}`}
+                    style={{ gridTemplateColumns: "minmax(0, 1fr) 1.5rem" }}
+                  >
                     <span className="min-w-0 break-normal text-lg font-black uppercase leading-[0.95] tracking-[-0.04em]">{service.name}</span>
-                    <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center border border-white/70 text-xl">↗</span>
+                    <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center self-end text-white" data-testid={`personnel-arrow-${service.id}`}>
+                      <svg className="size-6" fill="none" focusable="false" viewBox="0 0 24 24">
+                        <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
+                      </svg>
+                    </span>
                   </span>
                 </motion.button>
               )}

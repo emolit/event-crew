@@ -27,6 +27,7 @@ describe("Hero", () => {
     render(<Hero />);
 
     const metrics = screen.getByRole("list", { name: "EVENT CREW в цифрах" });
+    expect(metrics).not.toHaveClass("bg-black/25", "backdrop-blur-sm");
     expect(within(metrics).getByText("100+")).toBeInTheDocument();
     expect(within(metrics).getByText("мероприятий")).toBeInTheDocument();
     expect(within(metrics).getByText("400+")).toBeInTheDocument();
@@ -37,6 +38,31 @@ describe("Hero", () => {
 });
 
 describe("Footer", () => {
+  it("shows the supervisor offer as a distinct tilted promotion", () => {
+    render(<Footer />);
+
+    const promotion = screen.getByRole("complementary", { name: "Акция для новых клиентов" });
+    const contacts = screen.getByRole("region", { name: "Свяжитесь с нами" });
+    expect(within(promotion).getByText("Супервайзер в подарок!")).toBeInTheDocument();
+    expect(
+      within(promotion).getByText("Закажите персонал от 4 человек и получите супервайзера бесплатно"),
+    ).toBeInTheDocument();
+    expect(within(promotion).getByText("Акция для новых клиентов*")).toBeInTheDocument();
+    expect(promotion).toHaveClass("bg-[color:var(--accent)]", "lg:rotate-[1.25deg]", "xl:max-w-[19rem]");
+    expect(contacts.nextElementSibling).toBe(promotion);
+  });
+
+  it("keeps the permanent client in a compact footer section", () => {
+    render(<Footer />);
+
+    const clients = screen.getByRole("region", { name: "Наши постоянные клиенты" });
+    expect(clients).toBeInTheDocument();
+    expect(within(clients).getByRole("img", { name: /trace advertising group/i })).toHaveAttribute(
+      "src",
+      expect.stringContaining("trace-group.png"),
+    );
+  });
+
   it("renders the verified contact channels as actionable links", () => {
     render(<Footer />);
 

@@ -38,11 +38,11 @@ export default function Hero() {
           </div>
         </div>
 
-        <ul aria-label="EVENT CREW в цифрах" className="grid grid-cols-3 border-y border-white/25 bg-black/25 backdrop-blur-sm">
+        <ul aria-label="EVENT CREW в цифрах" className="grid grid-cols-3 border-y border-white/25">
           {metrics.map((metric, index) => (
             <li className={`min-w-0 px-2 py-3 sm:px-6 sm:py-5 lg:px-8 ${index > 0 ? "border-l border-white/25" : ""}`} key={metric.label}>
-              <p className="whitespace-nowrap text-[clamp(1.4rem,4.4vw,3.25rem)] font-black leading-none tracking-[-0.05em]">{metric.value}</p>
-              <p className="mt-1 text-[0.6rem] font-bold uppercase leading-tight tracking-[0.06em] text-white/75 sm:mt-2 sm:text-xs">{metric.label}</p>
+              <p className="whitespace-nowrap text-[clamp(1.4rem,4.4vw,3.25rem)] font-black leading-none tracking-[-0.05em] drop-shadow-[0_2px_3px_rgba(0,0,0,0.95)]">{metric.value}</p>
+              <p className="mt-1 text-[0.6rem] font-bold uppercase leading-tight tracking-[0.06em] text-white/75 drop-shadow-[0_2px_3px_rgba(0,0,0,0.95)] sm:mt-2 sm:text-xs">{metric.label}</p>
             </li>
           ))}
         </ul>

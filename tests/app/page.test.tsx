@@ -9,4 +9,6 @@ it("renders the EVENT CREW landing page without exposing the inquiry form", () =
   expect(container.querySelector("#contact")).not.toBeInTheDocument();
   expect(container.querySelector("#contacts")).toBeInTheDocument();
   expect(screen.queryByRole("button", { name: /отправить заявку/i })).not.toBeInTheDocument();
+
+  expect(container.querySelector("#clients")).not.toBeInTheDocument();
 });
