@@ -24,7 +24,7 @@ export function getAdminConfig(env: NodeJS.ProcessEnv = process.env): AdminConfi
     throw new Error("SESSION_SECRET must contain at least 64 characters in production");
   }
 
-  const dataDir = resolve(configuredDataDir || ".data");
+  const dataDir = resolve(/* turbopackIgnore: true */ configuredDataDir || ".data");
   const sessionSecret = configuredSecret || DEVELOPMENT_SESSION_SECRET;
 
   return {
