@@ -1,0 +1,1 @@
+import ClientForm from"@/components/admin/ClientForm";import{createClientAction}from"@/app/admin/clients/actions";export default function Page(){return <><h1 className="text-4xl font-black">Новый клиент</h1><ClientForm action={createClientAction} initial={null}/></>}
