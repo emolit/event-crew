@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "EVENT CREW landing page",
   "scripts": {
+    "admin:create": "tsx scripts/create-admin.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
