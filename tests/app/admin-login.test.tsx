@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
-import LoginPage from "@/app/admin/login/page";
+import LoginPage from "@/app/admin/(auth)/login/page";
 import { buildSessionCookie } from "@/lib/auth/session";
 
 vi.mock("@/app/admin/login/actions", () => ({
