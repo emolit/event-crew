@@ -1,0 +1,1 @@
+import PersonnelForm from "@/components/admin/PersonnelForm"; import {createPersonnelAction} from "@/app/admin/personnel/actions"; export default function Page(){return <><h1 className="text-4xl font-black">Новая карточка</h1><PersonnelForm action={createPersonnelAction} initial={null}/></>}
