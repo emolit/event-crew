@@ -4,7 +4,7 @@ import { advantages } from "@/data/advantages";
 import { processSteps } from "@/data/process";
 import { projects } from "@/data/projects";
 import { services } from "@/data/services";
-import { siteConfig } from "@/data/site";
+import { initialClients, initialFooter, initialHomepage, siteConfig } from "@/data/site";
 
 describe("landing content contracts", () => {
   it("provides the complete landing content", () => {
@@ -18,6 +18,19 @@ describe("landing content contracts", () => {
   it("keeps all content images local and replaceable", () => {
     const paths = [siteConfig.heroImage, ...services.map((service) => service.image), ...projects.map((project) => project.image)];
     expect(paths.every((path) => path.startsWith("/images/"))).toBe(true);
+  });
+
+  it("defines the complete initial admin-managed homepage, footer, and clients", () => {
+    expect(initialHomepage).toMatchObject({
+      title: "Персонал для вашего мероприятия",
+      heroImage: "/images/hero-backstage.jpg",
+      primaryButtonHref: "#contacts",
+    });
+    expect(initialFooter.contacts.email.value).toBe("eventcrew@bk.ru");
+    expect(initialFooter.promotion.visible).toBe(true);
+    expect(initialClients).toEqual([
+      expect.objectContaining({ name: "TRACE Advertising Group", websiteUrl: "https://trace-group.ru/" }),
+    ]);
   });
 
   it("keeps the exact stable service ids and replacement paths", () => {

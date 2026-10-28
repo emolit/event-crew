@@ -25,7 +25,7 @@ CREATE TABLE media_assets (
   id TEXT PRIMARY KEY,
   filename TEXT NOT NULL UNIQUE,
   original_name TEXT NOT NULL,
-  mime_type TEXT NOT NULL CHECK (mime_type = 'image/webp'),
+  mime_type TEXT NOT NULL CHECK (mime_type IN ('image/webp', 'image/jpeg', 'image/png')),
   width INTEGER NOT NULL CHECK (width > 0),
   height INTEGER NOT NULL CHECK (height > 0),
   size_bytes INTEGER NOT NULL CHECK (size_bytes > 0),

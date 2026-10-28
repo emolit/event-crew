@@ -44,3 +44,35 @@ export const siteConfig = {
   },
 } as const satisfies SiteConfig;
 
+export const initialHomepage = {
+  eyebrow: siteConfig.tagline,
+  title: "Персонал для вашего мероприятия",
+  subtitle: "Хелперы, хостес, промоутеры, официанты и другой персонал.",
+  primaryButtonText: "Рассчитать стоимость",
+  primaryButtonHref: "#contacts",
+  secondaryButtonText: "Посмотреть услуги",
+  secondaryButtonHref: "/personnel",
+  heroImage: siteConfig.heroImage,
+} as const;
+
+export const initialFooter = {
+  contacts: siteConfig.contacts,
+  promotion: {
+    title: "Супервайзер в подарок!",
+    body: "Закажите персонал от 4 человек и получите супервайзера бесплатно",
+    disclaimer: "Акция для новых клиентов*",
+    visible: true,
+  },
+  copyrightText: "© 2026 EVENT CREW. Все права защищены.",
+} as const;
+
+export const initialClients = [
+  {
+    name: "TRACE Advertising Group",
+    logo: "/images/clients/trace-group.png",
+    alt: "TRACE Advertising Group",
+    websiteUrl: "https://trace-group.ru/",
+    visible: true,
+  },
+] as const;
+
