@@ -1,30 +1,33 @@
 import { render, screen, within } from "@testing-library/react";
 import Footer from "@/components/Footer";
 import Hero from "@/components/Hero";
-import { siteConfig } from "@/data/site";
+import { initialClients, initialFooter, initialHomepage, siteConfig } from "@/data/site";
+
+const homepage = { ...initialHomepage, heroMediaId: "hero" };
+const clients = initialClients.map((client, index) => ({ ...client, id: index + 1, mediaId: `client-${index}`, sortOrder: index, deletedAt: null }));
 
 describe("Hero", () => {
   it("presents the event team offer over the configured background image", () => {
-    render(<Hero />);
+    render(<Hero content={homepage} />);
 
     expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(1);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/^Персонал для вашего мероприятия$/);
     expect(screen.getByText("Хелперы, хостес, промоутеры, официанты и другой персонал.")).toBeInTheDocument();
     expect(screen.getByRole("img", { name: /подготовка площадки event crew/i })).toHaveAttribute(
       "src",
-      expect.stringContaining(encodeURIComponent(siteConfig.heroImage)),
+      expect.stringContaining(siteConfig.heroImage),
     );
   });
 
   it("offers direct navigation to the contact footer and services", () => {
-    render(<Hero />);
+    render(<Hero content={homepage} />);
 
     expect(screen.getByRole("link", { name: "Рассчитать стоимость" })).toHaveAttribute("href", "#contacts");
     expect(screen.getByRole("link", { name: "Посмотреть услуги" })).toHaveAttribute("href", "/personnel");
   });
 
   it("shows the three approved proof points on arrival", () => {
-    render(<Hero />);
+    render(<Hero content={homepage} />);
 
     const metrics = screen.getByRole("list", { name: "EVENT CREW в цифрах" });
     expect(metrics).not.toHaveClass("bg-black/25", "backdrop-blur-sm");
@@ -39,7 +42,7 @@ describe("Hero", () => {
 
 describe("Footer", () => {
   it("shows the supervisor offer as a distinct tilted promotion", () => {
-    render(<Footer />);
+    render(<Footer clients={clients} content={initialFooter} />);
 
     const promotion = screen.getByRole("complementary", { name: "Акция для новых клиентов" });
     const contacts = screen.getByRole("region", { name: "Свяжитесь с нами" });
@@ -53,11 +56,11 @@ describe("Footer", () => {
   });
 
   it("keeps the permanent client in a compact footer section", () => {
-    render(<Footer />);
+    render(<Footer clients={clients} content={initialFooter} />);
 
-    const clients = screen.getByRole("region", { name: "Наши постоянные клиенты" });
-    expect(clients).toBeInTheDocument();
-    const traceLink = within(clients).getByRole("link", { name: /trace advertising group/i });
+    const clientRegion = screen.getByRole("region", { name: "Наши постоянные клиенты" });
+    expect(clientRegion).toBeInTheDocument();
+    const traceLink = within(clientRegion).getByRole("link", { name: /trace advertising group/i });
     expect(traceLink).toHaveAttribute("href", "https://trace-group.ru/");
     expect(traceLink).toHaveAttribute("target", "_blank");
     expect(traceLink).toHaveAttribute("rel", expect.stringContaining("noopener"));
@@ -68,7 +71,7 @@ describe("Footer", () => {
   });
 
   it("renders the verified contact channels as actionable links", () => {
-    render(<Footer />);
+    render(<Footer clients={clients} content={initialFooter} />);
 
     expect(screen.getByRole("contentinfo")).toHaveAttribute("id", "contacts");
     expect(screen.getByRole("img", { name: "Логотип EVENT CREW" })).toHaveAttribute(

@@ -1,6 +1,8 @@
 import type { Database } from "@/lib/db/client";
 import { openDatabase } from "@/lib/db/client";
 import { runMigrations } from "@/lib/db/migrate";
+import { seedCurrentContent } from "@/lib/content/seed";
+import { mediaUrl } from "@/lib/media/store";
 import type {
   ClientRecord,
   FooterContent,
@@ -72,7 +74,7 @@ export function listPersonnel(options: RepositoryOptions = {}): PersonnelRecord[
     description: String(row.description),
     price: Number(row.price),
     mediaId: nullableString(row.media_id),
-    image: nullableString(row.filename),
+    image: mediaPath(nullableString(row.filename), nullableString(row.media_id)),
     alt: String(row.alt),
     sortOrder: Number(row.sort_order),
     deletedAt: nullableString(row.deleted_at),
@@ -101,7 +103,7 @@ export function getHomepage(options: Pick<RepositoryOptions, "db"> = {}): Homepa
     secondaryButtonText: String(row.secondary_button_text),
     secondaryButtonHref: String(row.secondary_button_href),
     heroMediaId: nullableString(row.hero_media_id),
-    heroImage: nullableString(row.filename),
+    heroImage: mediaPath(nullableString(row.filename), nullableString(row.hero_media_id)),
   };
 }
 
@@ -136,7 +138,7 @@ export function listClients(options: ClientOptions = {}): ClientRecord[] {
     id: Number(row.id),
     name: String(row.name),
     mediaId: String(row.media_id),
-    logo: String(row.filename),
+    logo: mediaPath(String(row.filename), String(row.media_id))!,
     alt: String(row.alt),
     websiteUrl: String(row.website_url),
     sortOrder: Number(row.sort_order),
@@ -159,6 +161,7 @@ export async function getPublicContent(options: Pick<RepositoryOptions, "db"> = 
 function contentDatabase(): Database {
   const db = openDatabase();
   runMigrations(db);
+  seedCurrentContent(db);
   return db;
 }
 
@@ -166,7 +169,7 @@ function mapProjectImage(row: Record<string, unknown>): ProjectImageRecord {
   return {
     id: Number(row.id),
     mediaId: String(row.media_id),
-    url: String(row.filename),
+    url: mediaPath(String(row.filename), String(row.media_id))!,
     alt: String(row.alt),
     sortOrder: Number(row.sort_order),
   };
@@ -179,4 +182,9 @@ function parseStringArray(value: string): string[] {
 
 function nullableString(value: unknown): string | null {
   return value === null || value === undefined ? null : String(value);
+}
+
+function mediaPath(filename: string | null, id: string | null): string | null {
+  if (!filename || !id) return null;
+  return filename.startsWith("/") ? filename : mediaUrl(id);
 }

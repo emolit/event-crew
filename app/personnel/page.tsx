@@ -2,13 +2,16 @@ import type { Metadata } from "next";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import PersonnelGrid from "@/components/PersonnelGrid";
+import { getPublicContent } from "@/lib/content/repository";
 
 export const metadata: Metadata = {
   title: "Персонал для мероприятий — EVENT CREW",
   description: "Хелперы, промоутеры, хостес, официанты и другой персонал для мероприятий в Москве.",
 };
 
-export default function PersonnelPage() {
+export const dynamic = "force-dynamic";
+export default async function PersonnelPage() {
+  const content = await getPublicContent();
   return (
     <div className="bg-[color:var(--foreground)] text-white">
       <Header />
@@ -22,12 +25,12 @@ export default function PersonnelPage() {
             </p>
           </div>
           <div className="mt-10 lg:mt-14">
-            <PersonnelGrid />
+            <PersonnelGrid personnel={content.personnel} />
           </div>
         </section>
 
       </main>
-      <Footer />
+      <Footer clients={content.clients} content={content.footer} />
     </div>
   );
 }

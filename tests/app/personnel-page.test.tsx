@@ -2,10 +2,14 @@ import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import PersonnelPage from "@/app/personnel/page";
 import { services } from "@/data/services";
+import { vi } from "vitest";
+import { publicContentFixture } from "@/tests/fixtures/public-content";
+
+vi.mock("@/lib/content/repository",()=>({getPublicContent:vi.fn(async()=>publicContentFixture)}));
 
 describe("Personnel page", () => {
-  it("keeps the floating graphite header readable", () => {
-    render(<PersonnelPage />);
+  it("keeps the floating graphite header readable", async () => {
+    render(await PersonnelPage());
 
     expect(screen.getByRole("banner")).toHaveClass("text-white");
     expect(screen.getByRole("button", { name: /открыть меню/i })).toHaveClass(
@@ -15,8 +19,8 @@ describe("Personnel page", () => {
     );
   });
 
-  it("presents all eight personnel cards without showing prices on their front faces", () => {
-    render(<PersonnelPage />);
+  it("presents all eight personnel cards without showing prices on their front faces", async () => {
+    render(await PersonnelPage());
 
     expect(screen.getByRole("heading", { level: 1, name: "Персонал" })).toBeInTheDocument();
     const list = screen.getByRole("list", { name: /виды персонала/i });
@@ -32,8 +36,8 @@ describe("Personnel page", () => {
     expect(within(list).queryByText(/₽\/час/i)).not.toBeInTheDocument();
   });
 
-  it("uses one calm studio treatment and equal proportions for every front card", () => {
-    render(<PersonnelPage />);
+  it("uses one calm studio treatment and equal proportions for every front card", async () => {
+    render(await PersonnelPage());
 
     const list = screen.getByRole("list", { name: /виды персонала/i });
     for (const service of services) {
@@ -47,8 +51,8 @@ describe("Personnel page", () => {
     }
   });
 
-  it("aligns crisp borderless SVG arrows with every personnel name", () => {
-    render(<PersonnelPage />);
+  it("aligns crisp borderless SVG arrows with every personnel name", async () => {
+    render(await PersonnelPage());
 
     const list = screen.getByRole("list", { name: /виды персонала/i });
     for (const service of services) {
@@ -78,7 +82,7 @@ describe("Personnel page", () => {
 
   it("keeps a long waiter description and its inquiry action inside the fixed card", async () => {
     const user = userEvent.setup();
-    render(<PersonnelPage />);
+    render(await PersonnelPage());
 
     await user.click(screen.getByRole("button", { name: "Подробнее: Официанты" }));
 
@@ -102,7 +106,7 @@ describe("Personnel page", () => {
 
   it("flips an open card back when the same card is activated again without showing a close icon", async () => {
     const user = userEvent.setup();
-    render(<PersonnelPage />);
+    render(await PersonnelPage());
 
     await user.click(screen.getByRole("button", { name: "Подробнее: Хелперы" }));
 
@@ -119,7 +123,7 @@ describe("Personnel page", () => {
 
   it("keeps the inquiry link usable without flipping the card back", async () => {
     const user = userEvent.setup();
-    render(<PersonnelPage />);
+    render(await PersonnelPage());
 
     await user.click(screen.getByRole("button", { name: "Подробнее: Хелперы" }));
 
@@ -131,8 +135,8 @@ describe("Personnel page", () => {
     expect(within(card).getByRole("button", { name: "Свернуть карточку: Хелперы" })).toBeInTheDocument();
   });
 
-  it("finishes with direct contacts without exposing the inquiry form", () => {
-    const { container } = render(<PersonnelPage />);
+  it("finishes with direct contacts without exposing the inquiry form", async () => {
+    const { container } = render(await PersonnelPage());
 
     expect(container.querySelector("#personnel-contact")).not.toBeInTheDocument();
     expect(container.querySelector("#contacts")).toBeInTheDocument();

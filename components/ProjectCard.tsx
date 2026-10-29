@@ -4,10 +4,10 @@ import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { createPortal } from "react-dom";
-import type { Project } from "@/data/projects";
+import type { ProjectRecord } from "@/lib/content/types";
 
 interface ProjectCardProps {
-  project: Project;
+  project: ProjectRecord;
   imageSizes: string;
   autoSlideOffset?: number;
 }
@@ -19,7 +19,7 @@ const imageVariants = {
 };
 
 export default function ProjectCard({ project, imageSizes, autoSlideOffset = 0 }: ProjectCardProps) {
-  const images = project.images ?? [project.image];
+  const images = project.images;
   const [activeImage, setActiveImage] = useState(0);
   const [slideDirection, setSlideDirection] = useState(1);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
@@ -100,16 +100,17 @@ export default function ProjectCard({ project, imageSizes, autoSlideOffset = 0 }
             custom={slideDirection}
             exit={prefersReducedMotion ? "center" : "exit"}
             initial={prefersReducedMotion ? "center" : "enter"}
-            key={images[activeImage]}
+            key={images[activeImage]?.id}
             transition={{ duration: prefersReducedMotion ? 0 : 0.55, ease: [0.22, 1, 0.36, 1] }}
             variants={imageVariants}
           >
             <Image
-              alt={project.alt}
+              alt={images[activeImage]?.alt ?? project.title}
               className="object-cover opacity-85 transition-transform duration-700 group-hover:scale-[1.025]"
               fill
               sizes={imageSizes}
-              src={images[activeImage]}
+              src={images[activeImage]?.url ?? "/images/brand/event-crew-logo.png"}
+              unoptimized
             />
           </motion.div>
         </AnimatePresence>
@@ -154,7 +155,7 @@ export default function ProjectCard({ project, imageSizes, autoSlideOffset = 0 }
           {images.length > 1 && (
             <div aria-hidden="true" className="mt-4 flex gap-1.5">
               {images.map((image, index) => (
-                <span className={`h-0.5 transition-all ${index === activeImage ? "w-7 bg-white" : "w-3 bg-white/35"}`} key={image} />
+                <span className={`h-0.5 transition-all ${index === activeImage ? "w-7 bg-white" : "w-3 bg-white/35"}`} key={image.id} />
               ))}
             </div>
           )}

@@ -3,17 +3,18 @@
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useState } from "react";
-import { services } from "@/data/services";
+import type { PersonnelRecord } from "@/lib/content/types";
 
-export default function PersonnelGrid() {
+export default function PersonnelGrid({ personnel }: { personnel: PersonnelRecord[] }) {
   const [openCard, setOpenCard] = useState<string | null>(null);
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <ul aria-label="Виды персонала" className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-      {services.map((service) => {
-        const isOpen = openCard === service.id;
-        const panelId = `personnel-${service.id}`;
+      {personnel.map((service) => {
+        const serviceKey = service.slug;
+        const isOpen = openCard === serviceKey;
+        const panelId = `personnel-${service.slug}`;
 
         return (
           <li aria-label={service.name} className="aspect-[4/5] min-h-0 [perspective:1200px]" key={service.id}>
@@ -57,20 +58,20 @@ export default function PersonnelGrid() {
                   exit={{ opacity: 0, rotateY: prefersReducedMotion ? 0 : -90 }}
                   initial={{ opacity: 0, rotateY: prefersReducedMotion ? 0 : 90 }}
                   key="front"
-                  onClick={() => setOpenCard(service.id)}
+                  onClick={() => setOpenCard(serviceKey)}
                   transition={{ duration: prefersReducedMotion ? 0 : 0.35, ease: "easeOut" }}
                   type="button"
                 >
                   <span aria-hidden="true" className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(255,255,255,0.98),rgba(232,230,223,0.15)_48%,transparent_72%)]" />
-                  <Image alt={service.alt} className="object-contain object-bottom px-1 pt-2 transition-transform duration-500 ease-out group-hover:scale-[1.025]" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" src={service.image} />
+                  <Image alt={service.alt} className="object-contain object-bottom px-1 pt-2 transition-transform duration-500 ease-out group-hover:scale-[1.025]" fill sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" src={service.image ?? "/images/brand/event-crew-logo.png"} unoptimized />
                   <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-[color:var(--accent)] via-[color:var(--accent)]/85 to-transparent" />
                   <span
                     className="absolute inset-x-0 bottom-0 grid min-h-28 items-end gap-3 p-5 sm:p-6"
-                    data-testid={`personnel-caption-${service.id}`}
+                    data-testid={`personnel-caption-${service.slug}`}
                     style={{ gridTemplateColumns: "minmax(0, 1fr) 1.5rem" }}
                   >
                     <span className="min-w-0 break-normal text-lg font-black uppercase leading-[0.95] tracking-[-0.04em]">{service.name}</span>
-                    <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center self-end text-black transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" data-testid={`personnel-arrow-${service.id}`}>
+                    <span aria-hidden="true" className="flex size-6 shrink-0 items-center justify-center self-end text-black transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" data-testid={`personnel-arrow-${service.slug}`}>
                       <svg className="size-6" fill="none" focusable="false" viewBox="0 0 24 24">
                         <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.8" />
                       </svg>

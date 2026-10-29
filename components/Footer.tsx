@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { siteConfig } from "@/data/site";
+import type { ClientRecord, FooterContent } from "@/lib/content/types";
 
 function ContactIcon({ type }: { type: "phone" | "telegram" | "whatsapp" | "email" }) {
   const commonProps = {
@@ -46,7 +47,7 @@ function ContactIcon({ type }: { type: "phone" | "telegram" | "whatsapp" | "emai
   );
 }
 
-export default function Footer() {
+export default function Footer({ content, clients }: { content: FooterContent; clients: ClientRecord[] }) {
   return (
     <footer className="scroll-mt-24 border-t border-black/10 bg-[color:var(--foreground)] text-[color:var(--background)]" id="contacts">
       <div className="mx-auto grid max-w-[94rem] items-start gap-x-8 gap-y-10 px-5 py-10 sm:px-8 lg:grid-cols-2 lg:px-12 xl:grid-cols-[minmax(13rem,1fr)_minmax(8rem,0.55fr)_minmax(25rem,1.65fr)_minmax(17rem,1.05fr)] xl:gap-x-9">
@@ -59,27 +60,12 @@ export default function Footer() {
             </div>
           </div>
 
-          <section aria-labelledby="footer-clients-heading" className="mt-7">
+          {clients.length > 0 && <section aria-labelledby="footer-clients-heading" className="mt-7">
             <p className="text-[0.65rem] font-black uppercase tracking-[0.16em] text-white/50" id="footer-clients-heading">
               Наши постоянные клиенты
             </p>
-            <a
-              aria-label="TRACE Advertising Group"
-              className="mt-3 flex h-16 max-w-52 items-center border border-white/15 bg-white/[0.035] px-4 transition-[border-color,background-color,transform] hover:-translate-y-0.5 hover:border-[color:var(--accent)] hover:bg-white/[0.07] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]"
-              href="https://trace-group.ru/"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              <Image
-                alt="TRACE Advertising Group"
-                className="h-auto w-full max-w-44 object-contain"
-                height={804}
-                sizes="176px"
-                src="/images/clients/trace-group.png"
-                width={1956}
-              />
-            </a>
-          </section>
+            <div className="mt-3 flex flex-wrap gap-3">{clients.map(client=><a aria-label={client.name} className="flex h-16 max-w-52 items-center border border-white/15 bg-white/[0.035] px-4 transition-[border-color,background-color,transform] hover:-translate-y-0.5 hover:border-[color:var(--accent)] hover:bg-white/[0.07] focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)]" href={client.websiteUrl} key={client.id} rel="noopener noreferrer" target="_blank"><Image alt={client.alt} className="h-auto w-full max-w-44 object-contain" height={804} sizes="176px" src={client.logo} unoptimized width={1956}/></a>)}</div>
+          </section>}
         </div>
 
         <nav aria-label="Навигация в подвале" className="order-4 lg:order-2">
@@ -97,7 +83,7 @@ export default function Footer() {
         <section aria-labelledby="footer-contacts-heading" className="order-2 min-w-0 lg:order-3">
           <p className="mb-3 text-xs font-black uppercase tracking-[0.16em] text-white/55" id="footer-contacts-heading">Свяжитесь с нами</p>
           <address className="grid gap-2.5 not-italic sm:grid-cols-2">
-            {Object.values(siteConfig.contacts).map((contact) => {
+            {Object.values(content.contacts).map((contact) => {
               const isMessenger = contact.label === "Telegram" || contact.label === "WhatsApp";
 
               return (
@@ -121,24 +107,24 @@ export default function Footer() {
           </address>
         </section>
 
-        <aside
+        {content.promotion.visible && <aside
           aria-label="Акция для новых клиентов"
           className="relative order-3 w-full max-w-sm rotate-[0.8deg] bg-[color:var(--accent)] px-5 py-5 text-[color:var(--foreground)] shadow-[7px_7px_0_rgba(255,255,255,0.11)] lg:order-4 lg:rotate-[1.25deg] xl:max-w-[19rem] xl:justify-self-end"
           style={{ clipPath: "polygon(0 0, 92% 0, 100% 16%, 100% 84%, 92% 100%, 0 100%)" }}
         >
           <span aria-hidden="true" className="absolute right-4 top-4 size-1.5 rounded-full bg-[color:var(--foreground)]" />
           <p className="max-w-[14rem] text-xl font-black uppercase leading-[0.92] tracking-[-0.045em]">
-            Супервайзер в подарок!
+            {content.promotion.title}
           </p>
           <p className="mt-2.5 max-w-[15rem] text-xs font-bold leading-relaxed">
-            Закажите персонал от 4 человек и получите супервайзера бесплатно
+            {content.promotion.body}
           </p>
           <p className="mt-3 text-[0.6rem] font-black uppercase tracking-[0.13em] opacity-70">
-            Акция для новых клиентов*
+            {content.promotion.disclaimer}
           </p>
-        </aside>
+        </aside>}
       </div>
-      <div className="border-t border-white/15 px-5 py-4 text-center text-[0.68rem] font-bold uppercase tracking-[0.1em] text-white/65 sm:px-8 lg:px-12">© 2026 EVENT CREW. Все права защищены.</div>
+      <div className="border-t border-white/15 px-5 py-4 text-center text-[0.68rem] font-bold uppercase tracking-[0.1em] text-white/65 sm:px-8 lg:px-12">{content.copyrightText}</div>
     </footer>
   );
 }

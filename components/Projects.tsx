@@ -1,7 +1,8 @@
 import ProjectCard from "@/components/ProjectCard";
 import Reveal from "@/components/Reveal";
 import SectionHeading from "@/components/ui/SectionHeading";
-import { projects, type ProjectSize } from "@/data/projects";
+import type { ProjectSize } from "@/data/projects";
+import type { ProjectRecord } from "@/lib/content/types";
 
 const secondarySlideGroup = new Set(["project-02", "project-04", "project-06"]);
 
@@ -17,7 +18,7 @@ const imageSizes: Record<ProjectSize, string> = {
   tall: "(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw",
 };
 
-export default function Projects() {
+export default function Projects({ projects }: { projects: ProjectRecord[] }) {
   return (
     <section aria-labelledby="projects-heading" className="mx-auto max-w-7xl px-5 py-20 sm:px-8 sm:py-28 lg:px-12" id="projects">
       <Reveal>
@@ -29,7 +30,7 @@ export default function Projects() {
         {projects.map((project, index) => (
           <Reveal className={sizeClasses[project.size]} delay={Math.min(index * 0.05, 0.25)} key={project.id}>
             <ProjectCard
-              autoSlideOffset={secondarySlideGroup.has(project.id) ? 2500 : 0}
+              autoSlideOffset={secondarySlideGroup.has(project.slug) ? 2500 : 0}
               imageSizes={imageSizes[project.size]}
               project={project}
             />

@@ -4,18 +4,21 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import Process from "@/components/Process";
 import Projects from "@/components/Projects";
+import { getPublicContent } from "@/lib/content/repository";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+export default async function Home() {
+  const content = await getPublicContent();
   return (
     <div id="top">
       <Header />
       <main>
-        <Hero />
+        <Hero content={content.homepage} />
         <Advantages />
-        <Projects />
+        <Projects projects={content.projects} />
         <Process />
       </main>
-      <Footer />
+      <Footer clients={content.clients} content={content.footer} />
     </div>
   );
 }

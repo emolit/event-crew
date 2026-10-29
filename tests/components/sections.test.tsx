@@ -3,7 +3,10 @@ import userEvent from "@testing-library/user-event";
 import { afterEach, vi } from "vitest";
 import Advantages from "@/components/Advantages";
 import Process from "@/components/Process";
-import Projects from "@/components/Projects";
+import ProjectsComponent from "@/components/Projects";
+import { publicContentFixture } from "@/tests/fixtures/public-content";
+
+const Projects = () => <ProjectsComponent projects={publicContentFixture.projects} />;
 import Services from "@/components/Services";
 import { advantages } from "@/data/advantages";
 import { processSteps } from "@/data/process";
