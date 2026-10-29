@@ -1,0 +1,10 @@
+[Unit]
+Description=Run EVENT CREW expired-content purge weekly
+
+[Timer]
+OnCalendar=Sun *-*-* 04:15:00
+Persistent=true
+Unit=event-crew-purge.service
+
+[Install]
+WantedBy=timers.target

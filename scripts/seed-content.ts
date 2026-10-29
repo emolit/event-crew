@@ -1,0 +1,1 @@
+import{openDatabase}from"@/lib/db/client";import{runMigrations}from"@/lib/db/migrate";import{seedCurrentContent}from"@/lib/content/seed";const db=openDatabase();runMigrations(db);seedCurrentContent(db);console.log("Миграции и начальный контент готовы");
