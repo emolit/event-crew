@@ -49,6 +49,13 @@ describe("database migrations", () => {
         "users",
       ]),
     );
+
+    const auditColumns = db.prepare("PRAGMA table_info(audit_log)").all() as Array<{
+      name: string;
+    }>;
+    expect(auditColumns.map(({ name }) => name)).toEqual(
+      expect.arrayContaining(["restored_at", "restored_by_user_id", "restored_from_json"]),
+    );
   });
 
   test("applies each migration exactly once", () => {
@@ -58,7 +65,7 @@ describe("database migrations", () => {
     runMigrations(db);
 
     const rows = db.prepare("SELECT version FROM schema_migrations ORDER BY version").all();
-    expect(rows).toEqual([{ version: 1 }]);
+    expect(rows).toEqual([{ version: 1 }, { version: 2 }]);
   });
 
   test("enforces active ordering uniqueness without blocking soft-deleted rows", () => {
