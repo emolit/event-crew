@@ -1,0 +1,2 @@
+"use client";
+export default function AdminError({error,reset}:{error:Error&{digest?:string};reset:()=>void}){return <section role="alert" className="max-w-xl rounded-xl border border-red-400/30 bg-red-950/30 p-6"><h1 className="text-2xl font-black">Не удалось сохранить изменения</h1><p className="mt-3 text-white/70">{error.message||"Проверьте заполнение полей и повторите попытку."}</p><button className="mt-5 rounded bg-[color:var(--accent)] px-4 py-3 font-black text-black" onClick={reset}>Повторить</button></section>}

@@ -18,6 +18,14 @@ SESSION_SECRET=СЛУЧАЙНАЯ_СТРОКА_НЕ_КОРОЧЕ_64_СИМВОЛ
 
 Создать секрет можно командой `openssl rand -hex 64`. Файл должен принадлежать `eventcrew:eventcrew` и иметь права `600`. Пароль администратора в `.env.local` не хранится.
 
+Nginx должен перезаписывать клиентский адрес и разрешать общий multipart-запрос до 50 МБ (каждый файл приложение всё равно ограничивает 12 МБ):
+
+```nginx
+client_max_body_size 50m;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+```
+
 ## Первое включение
 
 ```bash

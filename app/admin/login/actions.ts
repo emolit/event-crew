@@ -5,7 +5,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { getAdminConfig } from "@/lib/admin/config";
 import { authenticateCredentials } from "@/lib/auth/login";
-import { loginRateLimiter } from "@/lib/auth/rate-limit";
+import { loginAccountRateLimiter, loginIpRateLimiter } from "@/lib/auth/rate-limit";
 import { buildSessionCookie } from "@/lib/auth/session";
 
 export interface LoginState {
@@ -24,9 +24,9 @@ export async function loginAction(_state: LoginState, formData: FormData): Promi
     return { message: "Введите логин и пароль" };
   }
 
-  const clientIp = requestHeaders.get("x-forwarded-for")?.split(",", 1)[0].trim() || "unknown";
-  const limiterKey = `${clientIp}:${username.toLocaleLowerCase("ru")}`;
-  if (!loginRateLimiter.consume(limiterKey)) {
+  const clientIp = requestHeaders.get("x-real-ip")?.trim() || "unknown";
+  const accountKey = username.toLocaleLowerCase("ru");
+  if (!loginIpRateLimiter.consume(clientIp) || !loginAccountRateLimiter.consume(accountKey)) {
     return { message: "Слишком много попыток. Попробуйте через 15 минут" };
   }
 
@@ -38,7 +38,7 @@ export async function loginAction(_state: LoginState, formData: FormData): Promi
     return { message: result.message };
   }
 
-  loginRateLimiter.reset(limiterKey);
+  loginAccountRateLimiter.reset(accountKey);
   const config = getAdminConfig();
   const sessionCookie = buildSessionCookie(result.token, config.isProduction);
   const cookieStore = await cookies();

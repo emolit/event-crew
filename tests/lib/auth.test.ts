@@ -120,6 +120,12 @@ describe("login protection", () => {
     expect(limiter.consume("127.0.0.1:ivan", startedAt + 15 * 60_000 + 1)).toBe(true);
   });
 
+  test("evicts expired limiter buckets", () => {
+    const limiter = new LoginRateLimiter({ maxAttempts: 1, windowMs: 10, maxKeys: 2 });
+    limiter.consume("a", 0); limiter.consume("b", 0); limiter.consume("c", 20);
+    expect(limiter.size).toBe(1);
+  });
+
   test("throws the dedicated authorization error when no owner is present", () => {
     expect(() => assertAdmin(null)).toThrow(AuthRequiredError);
   });

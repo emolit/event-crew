@@ -115,9 +115,11 @@ export async function discardMedia(id: string, context: MediaStoreContext = {}):
   if (!UUID_PATTERN.test(id)) return;
   const config = context.config ?? getAdminConfig();
   const db = context.db ?? mediaDatabase(config);
+  const asset = db.prepare("SELECT filename FROM media_assets WHERE id = ?").get(id) as { filename: string } | undefined;
   db.prepare(
     "UPDATE media_assets SET status = 'orphaned', deleted_at = CURRENT_TIMESTAMP WHERE id = ? AND filename NOT LIKE '/%'",
   ).run(id);
+  if (asset && !asset.filename.startsWith("/")) await unlink(resolve(config.uploadsDir, asset.filename)).catch(() => undefined);
 }
 
 export function mediaUrl(id: string): string {

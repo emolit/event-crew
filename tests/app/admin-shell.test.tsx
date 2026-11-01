@@ -1,8 +1,9 @@
 import { fireEvent, render, screen } from "@testing-library/react";
-import { describe, expect, test } from "vitest";
+import { describe, expect, test, vi } from "vitest";
 import AdminShell from "@/components/admin/AdminShell";
 import ConfirmDialog from "@/components/admin/ConfirmDialog";
 import StatusNotice from "@/components/admin/StatusNotice";
+import DeleteAction from "@/components/admin/DeleteAction";
 
 const owner = { id: 1, username: "ivan", role: "owner" as const };
 
@@ -39,5 +40,11 @@ describe("admin shell", () => {
 
     expect(screen.getByRole("status")).toHaveTextContent("Изменения сохранены");
     expect(screen.getByRole("button", { name: "Удалить проект?" })).toBeInTheDocument();
+  });
+
+  test("requires confirmation before submitting a destructive action", () => {
+    const action=vi.fn();render(<DeleteAction action={action} description="Удалить карточку?"/>);
+    fireEvent.click(screen.getByRole("button",{name:"Удалить"}));expect(action).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole("button",{name:"Отмена"}));expect(action).not.toHaveBeenCalled();
   });
 });

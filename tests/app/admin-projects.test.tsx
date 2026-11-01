@@ -23,9 +23,14 @@ describe("project admin controls", () => {
   });
 
   test("shows gallery previews and a delete control for each photo", () => {
-    render(<ProjectGalleryEditor images={[{ id: 4, mediaId: "m", url: "/photo.webp", alt: "Команда", sortOrder: 0 }]} onChange={vi.fn()} />);
+    const onChange = vi.fn();
+    render(<ProjectGalleryEditor images={[{ id: 4, mediaId: "m", url: "/photo.webp", alt: "Команда", sortOrder: 0 }, { id: 5, mediaId: "n", url: "/two.webp", alt: "Гости", sortOrder: 1 }]} onChange={onChange} />);
     expect(screen.getByRole("img", { name: "Команда" })).toHaveAttribute("src", "/photo.webp");
     expect(screen.getByRole("button", { name: "Удалить фотографию Команда" })).toBeInTheDocument();
     expect(screen.getByLabelText("Добавить фотографии")).toHaveAttribute("accept", "image/jpeg,image/png,image/webp");
+    fireEvent.change(screen.getByLabelText("Alt-текст фотографии Команда"), { target: { value: "Новый alt" } });
+    expect(onChange).toHaveBeenCalledWith(expect.arrayContaining([expect.objectContaining({ id: 4, alt: "Новый alt" })]));
+    fireEvent.click(screen.getByRole("button", { name: "Переместить Гости вверх" }));
+    expect(onChange).toHaveBeenLastCalledWith([expect.objectContaining({ id: 5 }), expect.objectContaining({ id: 4 })]);
   });
 });

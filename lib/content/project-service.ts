@@ -71,11 +71,13 @@ export function reorderProjectImages(projectId: number, ids: number[], actorId: 
   transaction(db, () => {
     const project = requireProject(db, projectId);
     const current = project.images.map(({ id }) => id);
+    const before = project.images;
     validateExactOrder(ids, current, "Некорректный порядок галереи");
     db.prepare("UPDATE project_images SET sort_order = sort_order + 100000 WHERE project_id = ? AND deleted_at IS NULL").run(projectId);
     const update = db.prepare("UPDATE project_images SET sort_order = ? WHERE id = ? AND project_id = ? AND deleted_at IS NULL");
     ids.forEach((id, index) => update.run(index, id, projectId));
-    recordAudit(db, { entityType: "project-gallery", entityId: projectId, action: "reorder", before: current, after: ids, userId: actorId });
+    const after = requireProject(db, projectId).images;
+    recordAudit(db, { entityType: "project-gallery", entityId: projectId, action: "reorder", before, after, userId: actorId });
   });
 }
 
