@@ -49,7 +49,7 @@ export const initialHomepage = {
   title: "Персонал для вашего мероприятия",
   subtitle: "Хелперы, хостес, промоутеры, официанты и другой персонал.",
   primaryButtonText: "Рассчитать стоимость",
-  primaryButtonHref: "#contacts",
+  primaryButtonHref: "#contact",
   secondaryButtonText: "Посмотреть услуги",
   secondaryButtonHref: "/personnel",
   heroImage: siteConfig.heroImage,

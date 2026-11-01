@@ -1,4 +1,5 @@
 import Advantages from "@/components/Advantages";
+import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
@@ -17,6 +18,7 @@ export default async function Home() {
         <Advantages />
         <Projects projects={content.projects} />
         <Process />
+        <ContactForm />
       </main>
       <Footer clients={content.clients} content={content.footer} />
     </div>

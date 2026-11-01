@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import PersonnelGrid from "@/components/PersonnelGrid";
@@ -28,7 +29,7 @@ export default async function PersonnelPage() {
             <PersonnelGrid personnel={content.personnel} />
           </div>
         </section>
-
+        <ContactForm />
       </main>
       <Footer clients={content.clients} content={content.footer} />
     </div>

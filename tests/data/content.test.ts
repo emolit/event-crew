@@ -24,7 +24,7 @@ describe("landing content contracts", () => {
     expect(initialHomepage).toMatchObject({
       title: "Персонал для вашего мероприятия",
       heroImage: "/images/hero-backstage.jpg",
-      primaryButtonHref: "#contacts",
+      primaryButtonHref: "#contact",
     });
     expect(initialFooter.contacts.email.value).toBe("eventcrew@bk.ru");
     expect(initialFooter.promotion.visible).toBe(true);

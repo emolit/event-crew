@@ -65,7 +65,24 @@ describe("database migrations", () => {
     runMigrations(db);
 
     const rows = db.prepare("SELECT version FROM schema_migrations ORDER BY version").all();
-    expect(rows).toEqual([{ version: 1 }, { version: 2 }]);
+    expect(rows).toEqual([{ version: 1 }, { version: 2 }, { version: 3 }]);
+  });
+
+  test("moves the default homepage call to action to the restored contact form", () => {
+    const db = openTemporaryDatabase();
+    runMigrations(db);
+
+    db.prepare("DELETE FROM schema_migrations WHERE version = 3").run();
+    db.prepare(
+      `INSERT INTO site_content (
+        id, eyebrow, title, subtitle, primary_button_text, primary_button_href,
+        secondary_button_text, secondary_button_href
+      ) VALUES (1, 'EVENT CREW', 'Title', 'Subtitle', 'CTA', '#contacts', 'More', '/personnel')`,
+    ).run();
+    runMigrations(db);
+
+    const homepage = db.prepare("SELECT primary_button_href FROM site_content WHERE id = 1").get();
+    expect(homepage).toEqual({ primary_button_href: "#contact" });
   });
 
   test("enforces active ordering uniqueness without blocking soft-deleted rows", () => {

@@ -22,7 +22,7 @@ describe("Hero", () => {
   it("offers direct navigation to the contact footer and services", () => {
     render(<Hero content={homepage} />);
 
-    expect(screen.getByRole("link", { name: "Рассчитать стоимость" })).toHaveAttribute("href", "#contacts");
+    expect(screen.getByRole("link", { name: "Рассчитать стоимость" })).toHaveAttribute("href", "#contact");
     expect(screen.getByRole("link", { name: "Посмотреть услуги" })).toHaveAttribute("href", "/personnel");
   });
 

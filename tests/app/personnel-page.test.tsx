@@ -129,18 +129,21 @@ describe("Personnel page", () => {
 
     const card = screen.getByRole("listitem", { name: "Хелперы" });
     const inquiryLink = await within(card).findByRole("link", { name: /оставить заявку/i });
+    expect(inquiryLink).toHaveAttribute("href", "#contact");
     inquiryLink.addEventListener("click", (event) => event.preventDefault(), { once: true });
     await user.click(inquiryLink);
 
     expect(within(card).getByRole("button", { name: "Свернуть карточку: Хелперы" })).toBeInTheDocument();
   });
 
-  it("finishes with direct contacts without exposing the inquiry form", async () => {
+  it("finishes with the inquiry form immediately before direct contacts", async () => {
     const { container } = render(await PersonnelPage());
 
-    expect(container.querySelector("#personnel-contact")).not.toBeInTheDocument();
+    const contact = container.querySelector("#contact");
+    expect(contact).toBeInTheDocument();
     expect(container.querySelector("#contacts")).toBeInTheDocument();
-    expect(screen.queryByRole("heading", { name: /не нашли, что искали/i })).not.toBeInTheDocument();
-    expect(screen.queryByRole("button", { name: /отправить заявку/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /отправить заявку/i })).toBeInTheDocument();
+    expect(contact?.parentElement?.lastElementChild).toBe(contact);
+    expect(contact?.closest("main")?.nextElementSibling).toBe(container.querySelector("#contacts"));
   });
 });

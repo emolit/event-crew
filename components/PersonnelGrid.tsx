@@ -43,7 +43,7 @@ export default function PersonnelGrid({ personnel }: { personnel: PersonnelRecor
                     <p className="mt-2 font-serif text-3xl font-bold leading-none tracking-[-0.03em]">от {service.price} ₽/час</p>
                     <h2 className="mt-4 text-xl font-black uppercase leading-none tracking-[-0.04em]">{service.name}</h2>
                     <p className="mt-2 font-serif text-base leading-[1.35] text-black/75">{service.description}</p>
-                    <a className="pointer-events-auto mt-auto inline-flex min-h-10 shrink-0 items-center justify-center bg-black px-4 text-xs font-black uppercase tracking-[0.08em] text-white transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black" href="#contacts">
+                    <a className="pointer-events-auto mt-auto inline-flex min-h-10 shrink-0 items-center justify-center bg-black px-4 text-xs font-black uppercase tracking-[0.08em] text-white transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-black" href="#contact">
                       Оставить заявку
                     </a>
                   </div>
