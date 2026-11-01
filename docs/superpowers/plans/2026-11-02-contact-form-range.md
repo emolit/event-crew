@@ -82,4 +82,3 @@
 - [ ] Повторить component-тест и получить PASS.
 - [ ] Запустить `npm.cmd run test:run`, `npm.cmd run typecheck`, `npm.cmd run lint`, `npm.cmd run build`.
 - [ ] Commit: `feat: add date range and multi-select contact form`.
-
