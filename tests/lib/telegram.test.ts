@@ -5,8 +5,9 @@ const payload: ContactPayload = {
   name: "Иван",
   phone: "+7 999 123-45-67",
   telegram: "@ivan",
-  eventDate: "2026-09-25",
-  staffType: "Хостес",
+  eventStartDate: "2026-09-25",
+  eventEndDate: "2026-09-27",
+  staffTypes: ["Хостес", "Официанты"],
   quantity: 10,
   comment: "Регистрация гостей",
   website: "",
@@ -19,8 +20,8 @@ it("formats every populated contact field", () => {
   expect(message).toContain("<b>Имя:</b> Иван");
   expect(message).toContain("<b>Телефон:</b> +7 999 123-45-67");
   expect(message).toContain("<b>Telegram:</b> @ivan");
-  expect(message).toContain("<b>Дата мероприятия:</b> 2026-09-25");
-  expect(message).toContain("<b>Тип персонала:</b> Хостес");
+  expect(message).toContain("<b>Период мероприятия:</b> 2026-09-25 — 2026-09-27");
+  expect(message).toContain("<b>Виды персонала:</b> Хостес, Официанты");
   expect(message).toContain("<b>Количество:</b> 10");
   expect(message).toContain("<b>Комментарий:</b> Регистрация гостей");
 });
@@ -29,15 +30,16 @@ it("renders empty optional contact fields as an em dash", () => {
   const message = formatTelegramMessage({
     ...payload,
     telegram: "",
-    eventDate: "",
-    staffType: "",
+    eventStartDate: "",
+    eventEndDate: "",
+    staffTypes: [],
     quantity: undefined,
     comment: "",
   });
 
   expect(message).toContain("<b>Telegram:</b> —");
-  expect(message).toContain("<b>Дата мероприятия:</b> —");
-  expect(message).toContain("<b>Тип персонала:</b> —");
+  expect(message).toContain("<b>Период мероприятия:</b> —");
+  expect(message).toContain("<b>Виды персонала:</b> —");
   expect(message).toContain("<b>Количество:</b> —");
   expect(message).toContain("<b>Комментарий:</b> —");
 });

@@ -10,8 +10,9 @@ const validValues = {
   name: "Иван",
   phone: "+7 999 123-45-67",
   telegram: "@ivan",
-  eventDate: "2026-09-25",
-  staffType: "Хостес",
+  eventStartDate: "2026-09-25",
+  eventEndDate: "2026-09-27",
+  staffTypes: ["Хостес", "Официанты"],
   quantity: "10",
   comment: "Регистрация гостей",
 };
@@ -20,8 +21,11 @@ async function fillValidForm(user: ReturnType<typeof userEvent.setup>) {
   await user.type(screen.getByLabelText("Имя"), validValues.name);
   await user.type(screen.getByLabelText("Телефон"), validValues.phone);
   await user.type(screen.getByLabelText("Telegram"), validValues.telegram);
-  await user.type(screen.getByLabelText("Дата мероприятия"), validValues.eventDate);
-  await user.selectOptions(screen.getByLabelText("Тип персонала"), validValues.staffType);
+  await user.type(screen.getByLabelText("Дата начала"), validValues.eventStartDate);
+  await user.type(screen.getByLabelText("Дата окончания"), validValues.eventEndDate);
+  for (const staffType of validValues.staffTypes) {
+    await user.click(screen.getByRole("checkbox", { name: staffType }));
+  }
   await user.type(screen.getByLabelText("Количество сотрудников"), validValues.quantity);
   await user.type(screen.getByLabelText("Комментарий"), validValues.comment);
 }
@@ -49,15 +53,18 @@ describe("ContactForm", () => {
     );
   });
 
-  it("renders labeled fields, service options, and an inaccessible honeypot", () => {
+  it("renders a date range, personnel checkboxes, and an inaccessible honeypot", () => {
     render(<ContactForm />);
 
-    for (const label of ["Имя", "Телефон", "Telegram", "Дата мероприятия", "Тип персонала", "Количество сотрудников", "Комментарий"]) {
+    for (const label of ["Имя", "Телефон", "Telegram", "Дата начала", "Дата окончания", "Количество сотрудников", "Комментарий"]) {
       expect(screen.getByLabelText(label)).toBeInTheDocument();
     }
 
-    expect(screen.getByRole("option", { name: "Хостес" })).toBeInTheDocument();
-    expect(screen.getByRole("option", { name: "Другое" })).toBeInTheDocument();
+    expect(screen.getByRole("group", { name: "Виды персонала" })).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "Хостес" })).toBeInTheDocument();
+    expect(screen.getByRole("checkbox", { name: "Другое" })).toBeInTheDocument();
+    expect(screen.queryByLabelText("Дата мероприятия")).not.toBeInTheDocument();
+    expect(screen.queryByRole("combobox", { name: "Тип персонала" })).not.toBeInTheDocument();
 
     const honeypot = screen.getByLabelText("Ваш сайт");
     expect(honeypot).toHaveAttribute("autocomplete", "off");
@@ -109,6 +116,21 @@ describe("ContactForm", () => {
     expect(screen.getByText("Укажите корректный телефон")).toHaveAttribute("id", "phone-error");
   });
 
+  it("links an invalid date range error to the end date and focuses it", async () => {
+    const user = userEvent.setup();
+    render(<ContactForm />);
+
+    await user.type(screen.getByLabelText("Имя"), "Иван");
+    await user.type(screen.getByLabelText("Телефон"), "+7 999 123-45-67");
+    await user.type(screen.getByLabelText("Дата начала"), "2026-09-27");
+    await user.type(screen.getByLabelText("Дата окончания"), "2026-09-25");
+    await user.click(screen.getByRole("button", { name: "Отправить заявку" }));
+
+    expect(screen.getByLabelText("Дата окончания")).toHaveAttribute("aria-invalid", "true");
+    expect(screen.getByLabelText("Дата окончания")).toHaveAttribute("aria-describedby", "eventEndDate-error");
+    expect(screen.getByLabelText("Дата окончания")).toHaveFocus();
+  });
+
   it("posts the complete contact payload and disables the button while submitting", async () => {
     const user = userEvent.setup();
     let resolveRequest: ((value: Response) => void) | undefined;
@@ -147,6 +169,10 @@ describe("ContactForm", () => {
     expect(screen.getByLabelText("Имя")).toHaveValue("");
     expect(screen.getByLabelText("Телефон")).toHaveValue("");
     expect(screen.getByLabelText("Комментарий")).toHaveValue("");
+    expect(screen.getByLabelText("Дата начала")).toHaveValue("");
+    expect(screen.getByLabelText("Дата окончания")).toHaveValue("");
+    expect(screen.getByRole("checkbox", { name: "Хостес" })).not.toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Официанты" })).not.toBeChecked();
   });
 
   it("preserves entered values and reports the exact failure copy after a failed request", async () => {
@@ -161,5 +187,7 @@ describe("ContactForm", () => {
     expect(screen.getByLabelText("Имя")).toHaveValue(validValues.name);
     expect(screen.getByLabelText("Телефон")).toHaveValue(validValues.phone);
     expect(screen.getByLabelText("Комментарий")).toHaveValue(validValues.comment);
+    expect(screen.getByRole("checkbox", { name: "Хостес" })).toBeChecked();
+    expect(screen.getByRole("checkbox", { name: "Официанты" })).toBeChecked();
   });
 });

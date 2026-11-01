@@ -4,16 +4,18 @@ import { FormEvent, useRef, useState } from "react";
 import { services } from "@/data/services";
 import { contactSchema } from "@/lib/contact-schema";
 
-type FormField = "name" | "phone" | "telegram" | "eventDate" | "staffType" | "quantity" | "comment" | "website";
+type TextFormField = "name" | "phone" | "telegram" | "eventStartDate" | "eventEndDate" | "quantity" | "comment" | "website";
+type FormField = TextFormField | "staffTypes";
 type FormStatus = "idle" | "submitting" | "success" | "error";
-type FormValues = Record<FormField, string>;
+type FormValues = Record<TextFormField, string> & { staffTypes: string[] };
 
 const emptyValues: FormValues = {
   name: "",
   phone: "",
   telegram: "",
-  eventDate: "",
-  staffType: "",
+  eventStartDate: "",
+  eventEndDate: "",
+  staffTypes: [],
   quantity: "",
   comment: "",
   website: "",
@@ -22,6 +24,7 @@ const emptyValues: FormValues = {
 const errorMessages: Partial<Record<FormField, string>> = {
   name: "Укажите имя",
   phone: "Укажите корректный телефон",
+  eventEndDate: "Проверьте период мероприятия",
 };
 
 const successCopy = "Спасибо! Заявка отправлена. Скоро мы свяжемся с вами.";
@@ -46,7 +49,7 @@ export default function ContactForm({
   const [status, setStatus] = useState<FormStatus>("idle");
   const [validationSummary, setValidationSummary] = useState("");
 
-  function updateField(field: FormField, value: string) {
+  function updateField(field: TextFormField, value: string) {
     setValues((current) => ({ ...current, [field]: value }));
     setErrors((current) => {
       if (!current[field]) {
@@ -55,6 +58,22 @@ export default function ContactForm({
 
       const remainingErrors = { ...current };
       delete remainingErrors[field];
+      return remainingErrors;
+    });
+    setStatus("idle");
+    setValidationSummary("");
+  }
+
+  function toggleStaffType(staffType: string) {
+    setValues((current) => ({
+      ...current,
+      staffTypes: current.staffTypes.includes(staffType)
+        ? current.staffTypes.filter((value) => value !== staffType)
+        : [...current.staffTypes, staffType],
+    }));
+    setErrors((current) => {
+      const remainingErrors = { ...current };
+      delete remainingErrors.staffTypes;
       return remainingErrors;
     });
     setStatus("idle");
@@ -177,25 +196,42 @@ export default function ContactForm({
               <label htmlFor="telegram">Telegram</label>
               <input aria-describedby={errors.telegram ? "telegram-error" : undefined} aria-invalid={Boolean(errors.telegram)} autoComplete="off" className={inputClassName} id="telegram" name="telegram" onChange={(event) => updateField("telegram", event.target.value)} value={values.telegram} />
             </FieldError>
-            <FieldError error={errors.eventDate} id="eventDate-error">
-              <label htmlFor="eventDate">Дата мероприятия</label>
-              <input aria-describedby={errors.eventDate ? "eventDate-error" : undefined} aria-invalid={Boolean(errors.eventDate)} className={inputClassName} id="eventDate" name="eventDate" onChange={(event) => updateField("eventDate", event.target.value)} type="date" value={values.eventDate} />
-            </FieldError>
-            <FieldError error={errors.staffType} id="staffType-error">
-              <label htmlFor="staffType">Тип персонала</label>
-              <select aria-describedby={errors.staffType ? "staffType-error" : undefined} aria-invalid={Boolean(errors.staffType)} className={inputClassName} id="staffType" name="staffType" onChange={(event) => updateField("staffType", event.target.value)} value={values.staffType}>
-                <option value="">Выберите тип</option>
-                {services.map((service) => (
-                  <option key={service.id} value={service.name}>{service.name}</option>
-                ))}
-                <option value="Другое">Другое</option>
-              </select>
-            </FieldError>
             <FieldError error={errors.quantity} id="quantity-error">
               <label htmlFor="quantity">Количество сотрудников</label>
               <input aria-describedby={errors.quantity ? "quantity-error" : undefined} aria-invalid={Boolean(errors.quantity)} className={inputClassName} id="quantity" inputMode="numeric" min="1" name="quantity" onChange={(event) => updateField("quantity", event.target.value)} type="number" value={values.quantity} />
             </FieldError>
           </div>
+
+          <fieldset className="mt-6 rounded-2xl border border-white/10 bg-black/15 p-4 sm:p-5">
+            <legend className="px-2 text-sm font-bold">Период мероприятия</legend>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <FieldError error={errors.eventStartDate} id="eventStartDate-error">
+                <label htmlFor="eventStartDate">Дата начала</label>
+                <input aria-describedby={errors.eventStartDate ? "eventStartDate-error" : "event-period-hint"} aria-invalid={Boolean(errors.eventStartDate)} className={inputClassName} id="eventStartDate" name="eventStartDate" onChange={(event) => updateField("eventStartDate", event.target.value)} type="date" value={values.eventStartDate} />
+              </FieldError>
+              <FieldError error={errors.eventEndDate} id="eventEndDate-error">
+                <label htmlFor="eventEndDate">Дата окончания</label>
+                <input aria-describedby={errors.eventEndDate ? "eventEndDate-error" : "event-period-hint"} aria-invalid={Boolean(errors.eventEndDate)} className={inputClassName} id="eventEndDate" min={values.eventStartDate || undefined} name="eventEndDate" onChange={(event) => updateField("eventEndDate", event.target.value)} type="date" value={values.eventEndDate} />
+              </FieldError>
+            </div>
+            <p className="mt-3 text-xs leading-relaxed text-white/50" id="event-period-hint">Для мероприятия на один день укажите только дату начала.</p>
+          </fieldset>
+
+          <fieldset className="mt-6">
+            <legend className="text-sm font-bold">Виды персонала</legend>
+            <p className="mt-1 text-xs text-white/50">Можно выбрать несколько вариантов.</p>
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              {[...services.map((service) => service.name), "Другое"].map((staffType) => (
+                <label className="cursor-pointer" key={staffType}>
+                  <input checked={values.staffTypes.includes(staffType)} className="peer sr-only" name="staffTypes" onChange={() => toggleStaffType(staffType)} type="checkbox" value={staffType} />
+                  <span className="flex min-h-12 items-center justify-between gap-2 rounded-xl border border-white/15 bg-black/25 px-3 py-2 text-sm font-bold transition peer-checked:border-[color:var(--accent)] peer-checked:bg-[color:var(--accent)] peer-checked:text-[color:var(--foreground)] peer-focus-visible:outline-3 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-[color:var(--accent)]">
+                    <span>{staffType}</span>
+                    <span aria-hidden="true" className={`text-base transition-opacity ${values.staffTypes.includes(staffType) ? "opacity-100" : "opacity-0"}`}>✓</span>
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
           <FieldError error={errors.comment} id="comment-error">
             <label className="mt-5 block" htmlFor="comment">Комментарий</label>
             <textarea aria-describedby={errors.comment ? "comment-error" : undefined} aria-invalid={Boolean(errors.comment)} className={`${inputClassName} min-h-32 resize-y`} id="comment" name="comment" onChange={(event) => updateField("comment", event.target.value)} value={values.comment} />

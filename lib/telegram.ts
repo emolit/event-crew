@@ -26,11 +26,19 @@ export function formatTelegramMessage(payload: ContactPayload): string {
     `<b>Имя:</b> ${formatValue(payload.name)}`,
     `<b>Телефон:</b> ${formatValue(payload.phone)}`,
     `<b>Telegram:</b> ${formatValue(payload.telegram)}`,
-    `<b>Дата мероприятия:</b> ${formatValue(payload.eventDate)}`,
-    `<b>Тип персонала:</b> ${formatValue(payload.staffType)}`,
+    `<b>Период мероприятия:</b> ${formatValue(formatEventPeriod(payload.eventStartDate, payload.eventEndDate))}`,
+    `<b>Виды персонала:</b> ${formatValue(payload.staffTypes.join(", "))}`,
     `<b>Количество:</b> ${formatValue(payload.quantity)}`,
     `<b>Комментарий:</b> ${formatValue(payload.comment)}`,
   ].join("\n");
+}
+
+function formatEventPeriod(startDate: string, endDate: string): string {
+  if (!startDate) {
+    return "";
+  }
+
+  return endDate && endDate !== startDate ? `${startDate} — ${endDate}` : startDate;
 }
 
 export async function sendTelegramMessage(
