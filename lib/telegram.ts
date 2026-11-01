@@ -1,71 +1,59 @@
 import type { ContactPayload } from "@/lib/contact-schema";
 
-export type TelegramEnv = {
-  botToken: string;
+const DEFAULT_TIMEOUT_MS = 8_000;
+
+export interface TelegramConfig {
+  token: string;
   chatId: string;
-};
-
-const emptyValue = "—";
-
-export function escapeTelegramHtml(value: string): string {
-  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  timeoutMs?: number;
 }
 
-function formatValue(value: string | number | undefined): string {
-  if (value === "" || value === undefined) {
-    return emptyValue;
-  }
-
-  return escapeTelegramHtml(String(value));
-}
-
-export function formatTelegramMessage(payload: ContactPayload): string {
+export function formatApplicationTelegram(payload: ContactPayload): string {
   return [
-    "🔔 Новая заявка с сайта",
+    "🟡 НОВАЯ ЗАЯВКА EVENT CREW",
     "",
-    `<b>Имя:</b> ${formatValue(payload.name)}`,
-    `<b>Телефон:</b> ${formatValue(payload.phone)}`,
-    `<b>Telegram:</b> ${formatValue(payload.telegram)}`,
-    `<b>Период мероприятия:</b> ${formatValue(formatEventPeriod(payload.eventStartDate, payload.eventEndDate))}`,
-    `<b>Виды персонала:</b> ${formatValue(payload.staffTypes.join(", "))}`,
-    `<b>Количество:</b> ${formatValue(payload.quantity)}`,
-    `<b>Комментарий:</b> ${formatValue(payload.comment)}`,
+    `Имя: ${display(payload.name)}`,
+    `Телефон: ${display(payload.phone)}`,
+    `Telegram: ${display(payload.telegram)}`,
+    `Дата: ${formatEventPeriod(payload.eventStartDate, payload.eventEndDate)}`,
+    `Персонал: ${display(payload.staffTypes.join(", "))}`,
+    `Количество: ${display(payload.quantity)}`,
+    "",
+    "Комментарий:",
+    display(payload.comment),
   ].join("\n");
 }
 
-function formatEventPeriod(startDate: string, endDate: string): string {
-  if (!startDate) {
-    return "";
-  }
-
-  return endDate && endDate !== startDate ? `${startDate} — ${endDate}` : startDate;
-}
-
-export async function sendTelegramMessage(
+export async function sendApplicationTelegram(
   payload: ContactPayload,
-  env: TelegramEnv,
-  fetcher: typeof fetch = fetch,
+  config: TelegramConfig,
+  fetchImpl: typeof fetch = fetch,
 ): Promise<void> {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
+  const timeout = setTimeout(
+    () => controller.abort(),
+    config.timeoutMs ?? DEFAULT_TIMEOUT_MS,
+  );
 
   try {
-    const response = await fetcher(`https://api.telegram.org/bot${env.botToken}/sendMessage`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      signal: controller.signal,
-      body: JSON.stringify({
-        chat_id: env.chatId,
-        parse_mode: "HTML",
-        text: formatTelegramMessage(payload),
-      }),
-    });
+    const response = await fetchImpl(
+      `https://api.telegram.org/bot${config.token}/sendMessage`,
+      {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          chat_id: config.chatId,
+          text: formatApplicationTelegram(payload),
+        }),
+        signal: controller.signal,
+      },
+    );
 
     if (!response.ok) {
       throw new Error("TELEGRAM_DELIVERY_FAILED");
     }
 
-    const result = (await response.json()) as { ok?: boolean };
+    const result = await response.json() as { ok?: unknown };
     if (result.ok !== true) {
       throw new Error("TELEGRAM_DELIVERY_FAILED");
     }
@@ -74,4 +62,24 @@ export async function sendTelegramMessage(
   } finally {
     clearTimeout(timeout);
   }
+}
+
+function display(value: string | number | undefined): string {
+  return value === undefined || String(value).trim() === "" ? "—" : String(value);
+}
+
+function formatEventPeriod(startDate: string, endDate: string): string {
+  if (!startDate) {
+    return "—";
+  }
+
+  const start = formatIsoDate(startDate);
+  return endDate && endDate !== startDate
+    ? `${start} — ${formatIsoDate(endDate)}`
+    : `${start} (1 день)`;
+}
+
+function formatIsoDate(value: string): string {
+  const [year, month, day] = value.split("-");
+  return `${day}.${month}.${year}`;
 }
