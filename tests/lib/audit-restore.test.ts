@@ -77,7 +77,7 @@ describe("audit restoration", () => {
     expect(legacy).toMatchObject({ action: "restore", restoredAt: null, restorable: false });
   });
 
-  test("filters entries and restores an update with a new audit record", () => {
+  test("restores an update by marking the original audit entry", () => {
     const { db, actorId } = ctx();
     const item = listPersonnel({ db })[0];
     updatePersonnel(
@@ -94,9 +94,25 @@ describe("audit restoration", () => {
     );
     const entry = listAudit({ entityType: "personnel" }, { db })[0];
     expect(entry.before).toMatchObject({ price: item.price });
-    expect(restoreAuditEntry(entry.id, actorId, { db }).ok).toBe(true);
+    const countBefore = (db.prepare("SELECT COUNT(*) count FROM audit_log").get() as { count: number })
+      .count;
+    const result = restoreAuditEntry(entry.id, actorId, { db });
+    expect(result).toEqual({ ok: true, data: { restoredEntryId: entry.id } });
     expect(listPersonnel({ db })[0].price).toBe(item.price);
-    expect(listAudit({ action: "restore" }, { db })[0].entityId).toBe(String(item.id));
+    expect(
+      (db.prepare("SELECT COUNT(*) count FROM audit_log").get() as { count: number }).count,
+    ).toBe(countBefore);
+    expect(listAudit({ entityType: "personnel" }, { db })[0]).toMatchObject({
+      id: entry.id,
+      restoredByUserId: actorId,
+      restoredByUsername: "o",
+      restoredFrom: { price: item.price + 100 },
+      restorable: false,
+    });
+    expect(restoreAuditEntry(entry.id, actorId, { db })).toEqual({
+      ok: false,
+      message: "Запись уже восстановлена",
+    });
   });
 
   test("restores deletion and list ordering", () => {
@@ -132,5 +148,32 @@ describe("audit restoration", () => {
     expect(listPersonnel({ db, includeDeleted: true }).some(({ id }) => id === item.id)).toBe(
       false,
     );
+  });
+
+  test("leaves content and metadata unchanged when required media is unavailable", () => {
+    const { db, actorId } = ctx();
+    const items = listPersonnel({ db });
+    const original = items[0];
+    updatePersonnel(
+      original.id,
+      { ...original, price: original.price + 50, mediaId: items[1].mediaId! },
+      actorId,
+      { db },
+    );
+    const entry = listAudit({ entityType: "personnel" }, { db })[0];
+    db.prepare("UPDATE media_assets SET deleted_at=CURRENT_TIMESTAMP WHERE id=?").run(
+      original.mediaId,
+    );
+
+    expect(restoreAuditEntry(entry.id, actorId, { db })).toMatchObject({ ok: false });
+    expect(listPersonnel({ db })[0]).toMatchObject({
+      price: original.price + 50,
+      mediaId: items[1].mediaId,
+    });
+    expect(listAudit({ entityType: "personnel" }, { db })[0]).toMatchObject({
+      restoredAt: null,
+      restoredByUserId: null,
+      restoredFrom: null,
+    });
   });
 });

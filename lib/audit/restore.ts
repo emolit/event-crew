@@ -5,18 +5,18 @@ import { openDatabase } from "@/lib/db/client";
 import { runMigrations } from "@/lib/db/migrate";
 import type { ActionResult } from "@/lib/admin/action-result";
 import { getAudit } from "@/lib/audit/repository";
-import { recordAudit } from "@/lib/audit/types";
 import type { ClientRecord, FooterContent, HomepageContent, PersonnelRecord, ProjectRecord } from "@/lib/content/types";
 import { getFooter, getHomepage, listClients, listPersonnel, listProjects } from "@/lib/content/repository";
 
 interface Options { db?: Database }
 export interface PurgeReport { projects:number; personnel:number; clients:number; projectImages:number; media:number }
 
-export function restoreAuditEntry(id:number, actorId:number, options:Options={}):ActionResult<{restoredAuditId:number}>{
+export function restoreAuditEntry(id:number, actorId:number, options:Options={}):ActionResult<{restoredEntryId:number}>{
   const db=options.db??database(); const entry=getAudit(id,{db});
   if(!entry)return{ok:false,message:"Запись истории не найдена"};
+  if(entry.restoredAt)return{ok:false,message:"Запись уже восстановлена"};
   if(!entry.restorable)return{ok:false,message:"Срок восстановления истёк"};
-  try{return transaction(db,()=>{const before=currentSnapshot(db,entry.entityType,entry.entityId);verifyMedia(db,entry.before);applySnapshot(db,entry.entityType,entry.entityId,entry.before);const after=currentSnapshot(db,entry.entityType,entry.entityId);const restoredAuditId=recordAudit(db,{entityType:entry.entityType,entityId:entry.entityId,action:"restore",before,after,userId:actorId});return{ok:true,data:{restoredAuditId}};});}
+  try{return transaction(db,()=>{const restoredFrom=currentSnapshot(db,entry.entityType,entry.entityId);verifyMedia(db,entry.before);applySnapshot(db,entry.entityType,entry.entityId,entry.before);const update=db.prepare("UPDATE audit_log SET restored_at=CURRENT_TIMESTAMP,restored_by_user_id=?,restored_from_json=? WHERE id=? AND restored_at IS NULL").run(actorId,restoredFrom===null?null:JSON.stringify(restoredFrom),id);if(update.changes!==1)throw new Error("Запись уже восстановлена");return{ok:true,data:{restoredEntryId:id}};});}
   catch(error){return{ok:false,message:error instanceof Error?error.message:"Не удалось восстановить"};}
 }
 
