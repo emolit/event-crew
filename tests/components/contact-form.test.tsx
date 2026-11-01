@@ -31,6 +31,24 @@ afterEach(() => {
 });
 
 describe("ContactForm", () => {
+  it("uses the dark editorial treatment with a focused form card", () => {
+    const { container } = render(<ContactForm />);
+
+    const section = container.querySelector("#contact");
+    expect(section).toHaveClass("bg-[color:var(--foreground)]", "text-white", "overflow-hidden");
+    expect(screen.getByText("Ответим и уточним детали")).toBeInTheDocument();
+    expect(screen.getByText("Подберём команду и рассчитаем стоимость")).toBeInTheDocument();
+    expect(screen.getByRole("form", { name: /заявка на персонал/i })).toHaveClass(
+      "rounded-3xl",
+      "border-white/15",
+      "bg-white/[0.06]",
+    );
+    expect(screen.getByRole("button", { name: "Отправить заявку" })).toHaveClass(
+      "bg-[color:var(--accent)]",
+      "text-[color:var(--foreground)]",
+    );
+  });
+
   it("renders labeled fields, service options, and an inaccessible honeypot", () => {
     render(<ContactForm />);
 

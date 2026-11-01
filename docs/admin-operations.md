@@ -14,9 +14,15 @@ NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://eventcrw.com
 EVENT_CREW_DATA_DIR=/var/lib/event-crew
 SESSION_SECRET=СЛУЧАЙНАЯ_СТРОКА_НЕ_КОРОЧЕ_64_СИМВОЛОВ
+SMTP_HOST=smtp.mail.ru
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=eventcrew@bk.ru
+SMTP_PASSWORD=ПАРОЛЬ_ПРИЛОЖЕНИЯ_ПОЧТЫ
+CONTACT_RECIPIENT_EMAIL=eventcrew@bk.ru
 ```
 
-Создать секрет можно командой `openssl rand -hex 64`. Файл должен принадлежать `eventcrew:eventcrew` и иметь права `600`. Пароль администратора в `.env.local` не хранится.
+Создать секрет можно командой `openssl rand -hex 64`. Для SMTP используйте отдельный пароль приложения почты. Файл должен принадлежать `eventcrew:eventcrew` и иметь права `600`. Пароль администратора в `.env.local` не хранится.
 
 Nginx должен перезаписывать клиентский адрес и разрешать общий multipart-запрос до 50 МБ (каждый файл приложение всё равно ограничивает 12 МБ):
 

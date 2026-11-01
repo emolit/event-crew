@@ -35,10 +35,10 @@ interface ContactFormProps {
 }
 
 export default function ContactForm({
-  description = "Расскажите о событии — подберём команду под задачи, формат и тайминг вашего мероприятия в Москве.",
-  eyebrow = "EVENT CREW",
+  description = "Расскажите о формате, дате и задачах — предложим подходящий состав и быстро подготовим расчёт.",
+  eyebrow = "Обсудим ваше мероприятие",
   id = "contact",
-  title = "Нужен персонал на мероприятие?",
+  title = "Соберём команду для вашего события",
 }: ContactFormProps = {}) {
   const formRef = useRef<HTMLFormElement>(null);
   const [values, setValues] = useState<FormValues>(emptyValues);
@@ -132,22 +132,35 @@ export default function ContactForm({
   }
 
   return (
-    <section aria-labelledby={`${id}-heading`} className="scroll-mt-24 bg-[color:var(--accent)] text-[color:var(--foreground)]" id={id}>
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:items-start lg:gap-16 lg:px-12">
-        <div>
-          <p className="text-sm font-black uppercase tracking-[0.14em]">{eyebrow}</p>
-          <h2 className="mt-4 max-w-xl text-4xl font-black uppercase tracking-[-0.06em] sm:text-5xl lg:text-6xl" id={`${id}-heading`}>
+    <section aria-labelledby={`${id}-heading`} className="relative scroll-mt-24 overflow-hidden border-y border-white/10 bg-[color:var(--foreground)] text-white" id={id}>
+      <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-40 size-[32rem] rounded-full bg-[color:var(--accent)]/10 blur-3xl" />
+      <div aria-hidden="true" className="pointer-events-none absolute bottom-0 left-0 h-px w-full bg-gradient-to-r from-transparent via-[color:var(--accent)]/60 to-transparent" />
+      <div className="relative mx-auto grid max-w-7xl gap-12 px-5 py-20 sm:px-8 sm:py-28 lg:grid-cols-[minmax(0,0.82fr)_minmax(0,1.18fr)] lg:items-start lg:gap-16 lg:px-12">
+        <div className="lg:sticky lg:top-32">
+          <p className="flex items-center gap-3 text-xs font-black uppercase tracking-[0.18em] text-[color:var(--accent)] before:h-px before:w-10 before:bg-[color:var(--accent)]">{eyebrow}</p>
+          <h2 className="mt-5 max-w-xl text-4xl font-black uppercase leading-[0.92] tracking-[-0.06em] sm:text-5xl lg:text-6xl" id={`${id}-heading`}>
             {title}
           </h2>
-          <p className="mt-6 max-w-lg text-lg leading-relaxed">
+          <p className="mt-6 max-w-lg text-base leading-relaxed text-white/65 sm:text-lg">
             {description}
           </p>
+          <div className="mt-8 grid gap-3 text-sm font-bold sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
+            <p className="flex items-start gap-3"><span aria-hidden="true" className="mt-1.5 size-2 shrink-0 rounded-full bg-[color:var(--accent)]" />Ответим и уточним детали</p>
+            <p className="flex items-start gap-3"><span aria-hidden="true" className="mt-1.5 size-2 shrink-0 rounded-full bg-[color:var(--accent)]" />Подберём команду и рассчитаем стоимость</p>
+          </div>
         </div>
 
-        <form className="bg-[color:var(--background)] p-5 shadow-xl shadow-black/10 sm:p-8" noValidate onSubmit={handleSubmit} ref={formRef}>
-          <p className="mb-5 text-sm font-semibold">* — обязательные поля</p>
+        <form aria-label="Заявка на персонал" className="rounded-3xl border border-white/15 bg-white/[0.06] p-5 shadow-2xl shadow-black/30 backdrop-blur-sm sm:p-8 lg:p-10" noValidate onSubmit={handleSubmit} ref={formRef}>
+          <div className="mb-7 flex items-end justify-between gap-4 border-b border-white/10 pb-5">
+            <div>
+              <p className="text-xs font-black uppercase tracking-[0.16em] text-[color:var(--accent)]">Короткая заявка</p>
+              <p className="mt-2 text-xl font-black uppercase tracking-[-0.03em] sm:text-2xl">Расскажите о задаче</p>
+            </div>
+            <p className="shrink-0 text-xs font-semibold text-white/45">* — обязательно</p>
+          </div>
+          <p className="sr-only">* — обязательные поля</p>
           {validationSummary ? (
-            <p aria-live="assertive" className="mb-5 border-l-4 border-red-700 pl-3 font-bold text-red-800" role="alert">
+            <p aria-live="assertive" className="mb-5 rounded-xl border border-red-300/30 bg-red-400/10 px-4 py-3 font-bold text-red-100" role="alert">
               {validationSummary}
             </p>
           ) : null}
@@ -193,24 +206,24 @@ export default function ContactForm({
             <input autoComplete="off" className="sr-only" id="website" name="website" onChange={(event) => updateField("website", event.target.value)} tabIndex={-1} type="text" value={values.website} />
           </div>
 
-          <button className="mt-7 inline-flex min-h-11 w-full items-center justify-center bg-[color:var(--foreground)] px-6 text-sm font-black uppercase tracking-[0.08em] text-[color:var(--background)] transition-transform hover:-translate-y-0.5 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--foreground)] disabled:cursor-not-allowed disabled:opacity-70" disabled={status === "submitting"} type="submit">
+          <button className="mt-7 inline-flex min-h-13 w-full items-center justify-center rounded-xl bg-[color:var(--accent)] px-6 text-sm font-black uppercase tracking-[0.08em] text-[color:var(--foreground)] transition-[transform,filter] hover:-translate-y-0.5 hover:brightness-105 focus-visible:outline-3 focus-visible:outline-offset-4 focus-visible:outline-[color:var(--accent)] disabled:cursor-not-allowed disabled:opacity-70" disabled={status === "submitting"} type="submit">
             {status === "submitting" ? "Отправляем…" : "Отправить заявку"}
           </button>
-          {status === "success" ? <p aria-live="polite" className="mt-4 font-bold text-green-800" role="status">{successCopy}</p> : null}
-          {status === "error" ? <p aria-live="polite" className="mt-4 font-bold text-red-800" role="status">{failureCopy}</p> : null}
+          {status === "success" ? <p aria-live="polite" className="mt-4 rounded-xl border border-green-300/30 bg-green-400/10 px-4 py-3 font-bold text-green-100" role="status">{successCopy}</p> : null}
+          {status === "error" ? <p aria-live="polite" className="mt-4 rounded-xl border border-red-300/30 bg-red-400/10 px-4 py-3 font-bold text-red-100" role="status">{failureCopy}</p> : null}
         </form>
       </div>
     </section>
   );
 }
 
-const inputClassName = "mt-2 min-h-11 w-full border border-black/25 bg-white px-3 py-2 text-base outline-none transition focus:border-black focus:ring-2 focus:ring-[color:var(--accent)] aria-[invalid=true]:border-red-700";
+const inputClassName = "mt-2 min-h-12 w-full rounded-xl border border-white/15 bg-black/25 px-4 py-3 text-base text-white outline-none transition placeholder:text-white/35 focus:border-[color:var(--accent)] focus:bg-black/35 focus:ring-2 focus:ring-[color:var(--accent)]/25 aria-[invalid=true]:border-red-400 [color-scheme:dark]";
 
 function FieldError({ children, error, id }: { children: React.ReactNode; error?: string; id: string }) {
   return (
     <div>
       {children}
-      {error ? <p className="mt-1 text-sm font-semibold text-red-800" id={id}>{error}</p> : null}
+      {error ? <p className="mt-1 text-sm font-semibold text-red-300" id={id}>{error}</p> : null}
     </div>
   );
 }
