@@ -49,6 +49,8 @@ export default function HistoryTable({
                     {entry.restoredByUsername ?? "Удалённый пользователь"} · {entry.restoredAt}
                   </p>
                 </div>
+              ) : entry.action === "restore" ? (
+                <span className="text-sm text-white/60">Восстановление выполнено</span>
               ) : entry.restorable ? (
                 <RestoreDialog action={restoreAction} entryId={entry.id} />
               ) : (

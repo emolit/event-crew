@@ -115,6 +115,28 @@ describe("audit restoration", () => {
     });
   });
 
+  test("keeps restored history readable after the restoring user is deleted", () => {
+    const { db, actorId } = ctx();
+    const item = listPersonnel({ db })[0];
+    updatePersonnel(
+      item.id,
+      { ...item, price: item.price + 100, mediaId: item.mediaId! },
+      actorId,
+      { db },
+    );
+    const entry = listAudit({ entityType: "personnel" }, { db })[0];
+    expect(restoreAuditEntry(entry.id, actorId, { db }).ok).toBe(true);
+
+    db.prepare("DELETE FROM users WHERE id=?").run(actorId);
+
+    expect(listAudit({ entityType: "personnel" }, { db })[0]).toMatchObject({
+      restoredAt: expect.any(String),
+      restoredByUserId: null,
+      restoredByUsername: null,
+      restorable: false,
+    });
+  });
+
   test("restores deletion and list ordering", () => {
     const { db, actorId } = ctx();
     const items = listPersonnel({ db });
@@ -141,6 +163,11 @@ describe("audit restoration", () => {
     const entry = listAudit({ entityType: "personnel" }, { db })[0];
     db.prepare("UPDATE audit_log SET created_at='2020-01-01' WHERE id=?").run(entry.id);
     expect(restoreAuditEntry(entry.id, actorId, { db }).ok).toBe(false);
+    expect(listAudit({ entityType: "personnel" }, { db })[0]).toMatchObject({
+      restoredAt: null,
+      restoredByUserId: null,
+      restoredFrom: null,
+    });
     softDeletePersonnel(item.id, actorId, { db });
     db.prepare("UPDATE personnel SET deleted_at='2020-01-01' WHERE id=?").run(item.id);
     const report = purgeExpiredDeletedContent(new Date("2026-10-28"), { db });

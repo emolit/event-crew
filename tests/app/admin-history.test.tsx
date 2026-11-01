@@ -61,6 +61,14 @@ describe("history UI", () => {
     expect(screen.getByText("Срок восстановления истёк")).toBeInTheDocument();
   });
 
+  test("labels a legacy restore row as completed instead of expired", () => {
+    render(
+      <HistoryTable entries={[{ ...entry, action: "restore", restorable: false }]} />,
+    );
+    expect(screen.getByText("Восстановление выполнено")).toBeInTheDocument();
+    expect(screen.queryByText("Срок восстановления истёк")).not.toBeInTheDocument();
+  });
+
   test("requires explicit confirmation", () => {
     render(<RestoreDialog entryId={1} action={vi.fn()} />);
     fireEvent.click(screen.getByRole("button", { name: "Восстановить" }));
