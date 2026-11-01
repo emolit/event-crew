@@ -97,6 +97,34 @@ it("rejects cross-origin browser requests and accepts a matching Origin", async 
   expect(sameOriginResponse.status).toBe(200);
 });
 
+it("accepts the configured public origin when nginx exposes an internal request URL", async () => {
+  process.env.NEXT_PUBLIC_SITE_URL = "https://eventcrw.com";
+
+  const response = await POST(
+    createRequest(JSON.stringify(payload), {
+      headers: { origin: "https://eventcrw.com" },
+      url: "http://127.0.0.1:3000/api/contact",
+    }),
+  );
+
+  expect(response.status).toBe(200);
+  await expect(response.json()).resolves.toEqual({ ok: true });
+});
+
+it("keeps rejecting foreign origins and falls back safely when the configured URL is invalid", async () => {
+  process.env.NEXT_PUBLIC_SITE_URL = "not-a-url";
+
+  const foreignResponse = await POST(
+    createRequest(JSON.stringify(payload), { headers: { origin: "https://attacker.example" } }),
+  );
+  expect(foreignResponse.status).toBe(403);
+
+  const localResponse = await POST(
+    createRequest(JSON.stringify(payload), { headers: { origin: "http://localhost" } }),
+  );
+  expect(localResponse.status).toBe(200);
+});
+
 it("returns 413 before reading a declared body larger than 16 KiB", async () => {
   const response = await POST(
     createRequest(JSON.stringify(payload), { headers: { "content-length": "16385" } }),

@@ -16,7 +16,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const origin = request.headers.get("origin");
-  if (origin && !isSameOrigin(origin, request.url)) {
+  if (origin && !isAllowedOrigin(origin, request.url, process.env.NEXT_PUBLIC_SITE_URL)) {
     return Response.json({ ok: false, error: "ORIGIN_NOT_ALLOWED" }, { status: 403 });
   }
 
@@ -74,9 +74,23 @@ export async function POST(request: Request): Promise<Response> {
   return Response.json({ ok: true });
 }
 
-function isSameOrigin(origin: string, requestUrl: string): boolean {
+function isAllowedOrigin(origin: string, requestUrl: string, configuredSiteUrl?: string): boolean {
   try {
-    return new URL(origin).origin === new URL(requestUrl).origin;
+    const requestOrigin = new URL(requestUrl).origin;
+    const submittedOrigin = new URL(origin).origin;
+    if (submittedOrigin === requestOrigin) {
+      return true;
+    }
+
+    if (!configuredSiteUrl) {
+      return false;
+    }
+
+    try {
+      return submittedOrigin === new URL(configuredSiteUrl).origin;
+    } catch {
+      return false;
+    }
   } catch {
     return false;
   }
