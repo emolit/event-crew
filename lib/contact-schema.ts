@@ -2,7 +2,7 @@ import { z } from "zod";
 import { services } from "@/data/services";
 
 const optionalText = (maxLength: number) => z.string().trim().max(maxLength);
-const allowedStaffTypes = new Set(["", "Другое", ...services.map((service) => service.name)]);
+const allowedStaffTypes = new Set(["Другое", ...services.map((service) => service.name)]);
 
 function isIsoCalendarDate(value: string): boolean {
   if (value === "") {
@@ -40,8 +40,12 @@ export const contactSchema = z.object({
       return digitCount >= 10 && digitCount <= 15;
     }),
   telegram: optionalText(80),
-  eventDate: z.string().trim().max(10).refine(isIsoCalendarDate),
-  staffType: optionalText(80).refine((value) => allowedStaffTypes.has(value)),
+  eventStartDate: z.string().trim().max(10).refine(isIsoCalendarDate),
+  eventEndDate: z.string().trim().max(10).refine(isIsoCalendarDate),
+  staffTypes: z
+    .array(z.string().trim().max(80).refine((value) => allowedStaffTypes.has(value)))
+    .max(allowedStaffTypes.size)
+    .refine((values) => new Set(values).size === values.length),
   quantity: z.string().trim().transform((value, context) => {
     if (value === "") {
       return undefined;
@@ -63,6 +67,14 @@ export const contactSchema = z.object({
   }),
   comment: optionalText(1500),
   website: z.string().trim().length(0),
+}).superRefine((value, context) => {
+  if (value.eventEndDate && !value.eventStartDate) {
+    context.addIssue({ code: "custom", message: "End date requires a start date.", path: ["eventEndDate"] });
+  }
+
+  if (value.eventStartDate && value.eventEndDate && value.eventEndDate < value.eventStartDate) {
+    context.addIssue({ code: "custom", message: "End date must not be before start date.", path: ["eventEndDate"] });
+  }
 });
 
 export type ContactPayload = z.output<typeof contactSchema>;

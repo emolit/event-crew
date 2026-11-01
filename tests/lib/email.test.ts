@@ -5,8 +5,9 @@ const payload = {
   name: "Иван <script>alert(1)</script>\r\nBcc: attacker@example.com",
   phone: "+7 999 123-45-67",
   telegram: "@ivan",
-  eventDate: "2026-09-25",
-  staffType: "Хостес",
+  eventStartDate: "2026-09-25",
+  eventEndDate: "2026-09-27",
+  staffTypes: ["Хостес", "Официанты"],
   quantity: 10,
   comment: "Регистрация & встреча гостей",
   website: "",
@@ -19,10 +20,18 @@ describe("application email", () => {
     expect(message.subject).not.toMatch(/[\r\n]/);
     expect(message.subject).toContain("Иван");
     expect(message.text).toContain("Телефон: +7 999 123-45-67");
+    expect(message.text).toContain("Период мероприятия: 25.09.2026 — 27.09.2026");
+    expect(message.text).toContain("Виды персонала: Хостес, Официанты");
     expect(message.text).toContain("Количество: 10");
     expect(message.html).toContain("Иван &lt;script&gt;alert(1)&lt;/script&gt;");
     expect(message.html).toContain("Регистрация &amp; встреча гостей");
     expect(message.html).not.toContain("<script>");
+  });
+
+  test("marks a missing end date as a one-day event", () => {
+    const message = formatApplicationEmail({ ...payload, eventEndDate: "" });
+
+    expect(message.text).toContain("Период мероприятия: 25.09.2026 (1 день)");
   });
 
   test("uses encrypted Mail SMTP and sends from and to the configured mailbox", async () => {

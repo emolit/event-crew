@@ -39,8 +39,8 @@ export function formatApplicationEmail(
     ["Имя", payload.name],
     ["Телефон", payload.phone],
     ["Telegram", payload.telegram],
-    ["Дата мероприятия", payload.eventDate],
-    ["Тип персонала", payload.staffType],
+    ["Период мероприятия", formatEventPeriod(payload.eventStartDate, payload.eventEndDate)],
+    ["Виды персонала", payload.staffTypes.join(", ")],
     ["Количество", payload.quantity],
     ["Комментарий", payload.comment],
   ] as const;
@@ -86,6 +86,22 @@ export async function sendApplicationEmail(
 
 function display(value: string | number | undefined): string {
   return value === undefined || String(value).trim() === "" ? "—" : String(value);
+}
+
+function formatEventPeriod(startDate: string, endDate: string): string {
+  if (!startDate) {
+    return "—";
+  }
+
+  const start = formatIsoDate(startDate);
+  return endDate && endDate !== startDate
+    ? `${start} — ${formatIsoDate(endDate)}`
+    : `${start} (1 день)`;
+}
+
+function formatIsoDate(value: string): string {
+  const [year, month, day] = value.split("-");
+  return `${day}.${month}.${year}`;
 }
 
 function escapeHtml(value: string): string {
