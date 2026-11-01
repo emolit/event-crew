@@ -3,6 +3,7 @@ import { createInterface } from "node:readline/promises";
 import { hashPassword } from "../lib/auth/password";
 import { openDatabase } from "../lib/db/client";
 import { runMigrations } from "../lib/db/migrate";
+import { MIN_ADMIN_PASSWORD_LENGTH, validateAdminPassword } from "../lib/auth/password-policy";
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
@@ -13,10 +14,11 @@ async function main(): Promise<void> {
   const prompt = createInterface({ input: stdin, output: stdout });
   const username = (await prompt.question("Логин администратора [admin]: ")).trim() || "admin";
   prompt.close();
-  const password = await readHidden("Пароль (не менее 12 символов): ");
+  const password = await readHidden(`Пароль (не менее ${MIN_ADMIN_PASSWORD_LENGTH} символов): `);
   const confirmation = await readHidden("Повторите пароль: ");
-  if (password.length < 12) {
-    throw new Error("Пароль должен содержать не менее 12 символов");
+  const passwordError = validateAdminPassword(password);
+  if (passwordError) {
+    throw new Error(passwordError);
   }
   if (password !== confirmation) {
     throw new Error("Пароли не совпадают");
