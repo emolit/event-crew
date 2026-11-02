@@ -1,12 +1,12 @@
-import { sendApplicationEmail } from "@/lib/email";
+import { sendApplicationTelegram } from "@/lib/telegram";
 import { POST } from "@/app/api/contact/route";
 import { contactRateLimiter } from "@/lib/rate-limit";
 
-vi.mock("@/lib/email", () => ({
-  sendApplicationEmail: vi.fn(),
+vi.mock("@/lib/telegram", () => ({
+  sendApplicationTelegram: vi.fn(),
 }));
 
-const sendApplicationEmailMock = vi.mocked(sendApplicationEmail);
+const sendApplicationTelegramMock = vi.mocked(sendApplicationTelegram);
 
 const payload = {
   name: "Иван",
@@ -35,18 +35,14 @@ function createRequest(
 
 beforeEach(() => {
   contactRateLimiter.clear();
-  process.env.SMTP_HOST = "smtp.mail.ru";
-  process.env.SMTP_PORT = "465";
-  process.env.SMTP_SECURE = "true";
-  process.env.SMTP_USER = "eventcrew@bk.ru";
-  process.env.SMTP_PASSWORD = "application-password";
-  process.env.CONTACT_RECIPIENT_EMAIL = "eventcrew@bk.ru";
-  sendApplicationEmailMock.mockResolvedValue(undefined);
+  process.env.TELEGRAM_BOT_TOKEN = "bot-secret";
+  process.env.TELEGRAM_CHAT_ID = "-1001234567890";
+  sendApplicationTelegramMock.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
   process.env = { ...originalEnv };
-  sendApplicationEmailMock.mockReset();
+  sendApplicationTelegramMock.mockReset();
 });
 
 it("returns 200 and sends a valid request", async () => {
@@ -54,15 +50,11 @@ it("returns 200 and sends a valid request", async () => {
 
   expect(response.status).toBe(200);
   await expect(response.json()).resolves.toEqual({ ok: true });
-  expect(sendApplicationEmailMock).toHaveBeenCalledWith(
+  expect(sendApplicationTelegramMock).toHaveBeenCalledWith(
     { ...payload, quantity: 10 },
     {
-      host: "smtp.mail.ru",
-      port: 465,
-      secure: true,
-      user: "eventcrew@bk.ru",
-      password: "application-password",
-      recipient: "eventcrew@bk.ru",
+      token: "bot-secret",
+      chatId: "-1001234567890",
     },
   );
 });
@@ -77,7 +69,7 @@ it("returns 415 unless the request media type is application/json", async () => 
     ok: false,
     error: "UNSUPPORTED_MEDIA_TYPE",
   });
-  expect(sendApplicationEmailMock).not.toHaveBeenCalled();
+  expect(sendApplicationTelegramMock).not.toHaveBeenCalled();
 });
 
 it("rejects cross-origin browser requests and accepts a matching Origin", async () => {
@@ -90,7 +82,7 @@ it("rejects cross-origin browser requests and accepts a matching Origin", async 
     ok: false,
     error: "ORIGIN_NOT_ALLOWED",
   });
-  expect(sendApplicationEmailMock).not.toHaveBeenCalled();
+  expect(sendApplicationTelegramMock).not.toHaveBeenCalled();
 
   const sameOriginResponse = await POST(
     createRequest(JSON.stringify(payload), { headers: { origin: "http://localhost" } }),
@@ -136,7 +128,7 @@ it("returns 413 before reading a declared body larger than 16 KiB", async () => 
     ok: false,
     error: "PAYLOAD_TOO_LARGE",
   });
-  expect(sendApplicationEmailMock).not.toHaveBeenCalled();
+  expect(sendApplicationTelegramMock).not.toHaveBeenCalled();
 });
 
 it("returns 413 when the body exceeds 16 KiB without a Content-Length header", async () => {
@@ -147,7 +139,7 @@ it("returns 413 when the body exceeds 16 KiB without a Content-Length header", a
     ok: false,
     error: "PAYLOAD_TOO_LARGE",
   });
-  expect(sendApplicationEmailMock).not.toHaveBeenCalled();
+  expect(sendApplicationTelegramMock).not.toHaveBeenCalled();
 });
 
 it("allows five attempts per ten-minute window using the first forwarded IP", async () => {
@@ -171,7 +163,7 @@ it("allows five attempts per ten-minute window using the first forwarded IP", as
     ok: false,
     error: "RATE_LIMITED",
   });
-  expect(sendApplicationEmailMock).toHaveBeenCalledTimes(5);
+  expect(sendApplicationTelegramMock).toHaveBeenCalledTimes(5);
 });
 
 it("returns 400 for malformed JSON", async () => {
@@ -179,29 +171,32 @@ it("returns 400 for malformed JSON", async () => {
 
   expect(response.status).toBe(400);
   await expect(response.json()).resolves.toEqual({ ok: false, error: "VALIDATION_ERROR" });
-  expect(sendApplicationEmailMock).not.toHaveBeenCalled();
+  expect(sendApplicationTelegramMock).not.toHaveBeenCalled();
 });
 
-it("returns 400 for invalid fields without sending email", async () => {
+it("returns 400 for invalid fields without sending to Telegram", async () => {
   const response = await POST(createRequest(JSON.stringify({ ...payload, name: "" })));
 
   expect(response.status).toBe(400);
   await expect(response.json()).resolves.toEqual({ ok: false, error: "VALIDATION_ERROR" });
-  expect(sendApplicationEmailMock).not.toHaveBeenCalled();
+  expect(sendApplicationTelegramMock).not.toHaveBeenCalled();
 });
 
-it("returns 500 when email environment variables are absent", async () => {
-  delete process.env.SMTP_PASSWORD;
+it.each(["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"])(
+  "returns 500 when %s is absent",
+  async (variable) => {
+    delete process.env[variable];
 
-  const response = await POST(createRequest(JSON.stringify(payload)));
+    const response = await POST(createRequest(JSON.stringify(payload)));
 
-  expect(response.status).toBe(500);
-  await expect(response.json()).resolves.toEqual({ ok: false, error: "CONFIGURATION_ERROR" });
-  expect(sendApplicationEmailMock).not.toHaveBeenCalled();
-});
+    expect(response.status).toBe(500);
+    await expect(response.json()).resolves.toEqual({ ok: false, error: "CONFIGURATION_ERROR" });
+    expect(sendApplicationTelegramMock).not.toHaveBeenCalled();
+  },
+);
 
-it("returns 502 when email delivery fails", async () => {
-  sendApplicationEmailMock.mockRejectedValue(new Error("EMAIL_DELIVERY_FAILED"));
+it("returns 502 when Telegram delivery fails or times out", async () => {
+  sendApplicationTelegramMock.mockRejectedValue(new Error("TELEGRAM_DELIVERY_FAILED"));
 
   const response = await POST(createRequest(JSON.stringify(payload)));
 

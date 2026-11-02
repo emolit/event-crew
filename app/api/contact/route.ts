@@ -1,6 +1,6 @@
 import { contactSchema } from "@/lib/contact-schema";
 import { contactRateLimiter } from "@/lib/rate-limit";
-import { sendApplicationEmail } from "@/lib/email";
+import { sendApplicationTelegram } from "@/lib/telegram";
 
 export const runtime = "nodejs";
 
@@ -54,19 +54,15 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ ok: false, error: "VALIDATION_ERROR" }, { status: 400 });
   }
 
-  const host = process.env.SMTP_HOST?.trim() || "smtp.mail.ru";
-  const port = Number(process.env.SMTP_PORT?.trim() || "465");
-  const secure = (process.env.SMTP_SECURE?.trim() || "true").toLowerCase() === "true";
-  const user = process.env.SMTP_USER?.trim();
-  const password = process.env.SMTP_PASSWORD;
-  const recipient = process.env.CONTACT_RECIPIENT_EMAIL?.trim() || user;
+  const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
+  const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
 
-  if (!user || !password || !recipient || !Number.isInteger(port) || port < 1 || port > 65_535) {
+  if (!token || !chatId) {
     return Response.json({ ok: false, error: "CONFIGURATION_ERROR" }, { status: 500 });
   }
 
   try {
-    await sendApplicationEmail(parsed.data, { host, port, secure, user, password, recipient });
+    await sendApplicationTelegram(parsed.data, { token, chatId });
   } catch {
     return Response.json({ ok: false, error: "DELIVERY_ERROR" }, { status: 502 });
   }
