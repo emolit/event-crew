@@ -83,9 +83,15 @@ function restoreContactSchemaInput(body: unknown): unknown {
     return body;
   }
 
-  const quantity = (body as Record<string, unknown>).quantity;
+  const record = body as Record<string, unknown>;
+  const quantity = record.quantity;
+
+  if (!("quantity" in record)) {
+    return { ...record, quantity: "" };
+  }
+
   return typeof quantity === "number"
-    ? { ...body, quantity: String(quantity) }
+    ? { ...record, quantity: String(quantity) }
     : body;
 }
 

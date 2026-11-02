@@ -58,6 +58,18 @@ it("accepts an authorized normalized application and sends it to Telegram", asyn
   });
 });
 
+it("accepts a serialized application whose optional quantity was omitted", async () => {
+  const serialized = JSON.stringify({ ...payload, quantity: undefined });
+  const response = await POST(createRequest(serialized));
+
+  expect(response.status).toBe(200);
+  await expect(response.json()).resolves.toEqual({ ok: true });
+  expect(sendApplicationTelegramMock).toHaveBeenCalledWith(
+    { ...payload, quantity: undefined },
+    { token: "bot-secret", chatId: "-1001234567890" },
+  );
+});
+
 it.each([
   ["missing", ""],
   ["wrong scheme", "Basic relay-secret"],

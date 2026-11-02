@@ -13,6 +13,16 @@ export async function sendApplicationRelay(
   config: RelayConfig,
   fetchImpl: typeof fetch = fetch,
 ): Promise<void> {
+  let relayUrl: URL;
+  try {
+    relayUrl = new URL(config.url);
+    if (relayUrl.protocol !== "https:") {
+      throw new Error("INSECURE_RELAY_URL");
+    }
+  } catch {
+    throw new Error("RELAY_DELIVERY_FAILED");
+  }
+
   const controller = new AbortController();
   const timeout = setTimeout(
     () => controller.abort(),
@@ -20,8 +30,9 @@ export async function sendApplicationRelay(
   );
 
   try {
-    const response = await fetchImpl(config.url, {
+    const response = await fetchImpl(relayUrl.toString(), {
       method: "POST",
+      redirect: "error",
       headers: {
         authorization: `Bearer ${config.secret}`,
         "content-type": "application/json",

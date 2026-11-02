@@ -37,6 +37,7 @@ describe("contact relay client", () => {
     expect(url).toBe("https://example.netlify.app/api/contact/relay");
     expect(init).toMatchObject({
       method: "POST",
+      redirect: "error",
       headers: {
         authorization: "Bearer relay-secret",
         "content-type": "application/json",
@@ -44,6 +45,18 @@ describe("contact relay client", () => {
       body: JSON.stringify(payload),
     });
     expect(init?.signal).toBeInstanceOf(AbortSignal);
+  });
+
+  test.each([
+    ["an insecure URL", "http://relay.example/api/contact/relay"],
+    ["an invalid URL", "not-a-url"],
+  ])("rejects %s before making a network request", async (_label, url) => {
+    const fetchMock = vi.fn<typeof fetch>();
+
+    await expect(
+      sendApplicationRelay(payload, { url, secret: "relay-secret" }, fetchMock),
+    ).rejects.toThrow(/^RELAY_DELIVERY_FAILED$/);
+    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   test.each([
