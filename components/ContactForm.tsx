@@ -29,6 +29,8 @@ const errorMessages: Partial<Record<FormField, string>> = {
 
 const successCopy = "Спасибо! Заявка отправлена. Скоро мы свяжемся с вами.";
 const failureCopy = "Не удалось отправить заявку. Попробуйте еще раз.";
+const web3FormsEndpoint = "https://api.web3forms.com/submit";
+const web3FormsAccessKey = "353242b2-51bc-4a19-a5ef-89f5087fdd7a";
 
 interface ContactFormProps {
   description?: string;
@@ -131,10 +133,23 @@ export default function ContactForm({
     setStatus("submitting");
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch(web3FormsEndpoint, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(values),
+        body: JSON.stringify({
+          access_key: web3FormsAccessKey,
+          subject: "Новая заявка с сайта EVENT CREW",
+          from_name: "EVENT CREW",
+          botcheck: false,
+          Имя: values.name,
+          Телефон: values.phone,
+          Telegram: values.telegram,
+          "Дата начала": values.eventStartDate,
+          "Дата окончания": values.eventEndDate,
+          "Виды персонала": values.staffTypes.join(", "),
+          "Количество сотрудников": values.quantity,
+          Комментарий: values.comment,
+        }),
       });
       const body: unknown = await response.json();
 
@@ -264,6 +279,6 @@ function FieldError({ children, error, id }: { children: React.ReactNode; error?
   );
 }
 
-function isSuccessfulResponse(body: unknown): body is { ok: true } {
-  return typeof body === "object" && body !== null && "ok" in body && body.ok === true;
+function isSuccessfulResponse(body: unknown): body is { success: true } {
+  return typeof body === "object" && body !== null && "success" in body && body.success === true;
 }

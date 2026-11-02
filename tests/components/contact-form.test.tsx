@@ -131,7 +131,7 @@ describe("ContactForm", () => {
     expect(screen.getByLabelText("Дата окончания")).toHaveFocus();
   });
 
-  it("posts the complete contact payload and disables the button while submitting", async () => {
+  it("posts a readable application directly to Web3Forms and disables the button while submitting", async () => {
     const user = userEvent.setup();
     let resolveRequest: ((value: Response) => void) | undefined;
     const fetchMock = vi.fn(
@@ -147,19 +147,32 @@ describe("ContactForm", () => {
     await user.click(screen.getByRole("button", { name: "Отправить заявку" }));
 
     expect(screen.getByRole("button", { name: "Отправляем…" })).toBeDisabled();
-    expect(fetchMock).toHaveBeenCalledWith("/api/contact", {
+    expect(fetchMock).toHaveBeenCalledWith("https://api.web3forms.com/submit", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ ...validValues, website: "" }),
+      body: JSON.stringify({
+        access_key: "353242b2-51bc-4a19-a5ef-89f5087fdd7a",
+        subject: "Новая заявка с сайта EVENT CREW",
+        from_name: "EVENT CREW",
+        botcheck: false,
+        Имя: validValues.name,
+        Телефон: validValues.phone,
+        Telegram: validValues.telegram,
+        "Дата начала": validValues.eventStartDate,
+        "Дата окончания": validValues.eventEndDate,
+        "Виды персонала": validValues.staffTypes.join(", "),
+        "Количество сотрудников": validValues.quantity,
+        Комментарий: validValues.comment,
+      }),
     });
 
-    resolveRequest?.(new Response(JSON.stringify({ ok: true }), { status: 200 }));
+    resolveRequest?.(new Response(JSON.stringify({ success: true }), { status: 200 }));
     await waitFor(() => expect(screen.getByText(successCopy)).toHaveAttribute("aria-live", "polite"));
   });
 
   it("resets fields and reports success after a successful request", async () => {
     const user = userEvent.setup();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 })));
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: true }), { status: 200 })));
     render(<ContactForm />);
 
     await fillValidForm(user);
@@ -177,7 +190,7 @@ describe("ContactForm", () => {
 
   it("preserves entered values and reports the exact failure copy after a failed request", async () => {
     const user = userEvent.setup();
-    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ ok: false }), { status: 502 })));
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response(JSON.stringify({ success: false }), { status: 502 })));
     render(<ContactForm />);
 
     await fillValidForm(user);

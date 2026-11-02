@@ -13,14 +13,12 @@
 2. Создайте `.env.local` в корне проекта:
 
    ```dotenv
-   TELEGRAM_BOT_TOKEN=replace-with-bot-token
-   TELEGRAM_CHAT_ID=-1001234567890
-   CONTACT_RELAY_URL=
-   CONTACT_RELAY_SECRET=
    NEXT_PUBLIC_SITE_URL=http://localhost:3000
+   EVENT_CREW_DATA_DIR=./.data
+   SESSION_SECRET=replace-with-a-long-random-string
    ```
 
-   Без `CONTACT_RELAY_URL` заявки отправляются напрямую: обязательны `TELEGRAM_BOT_TOKEN` от `@BotFather` и строковый `TELEGRAM_CHAT_ID` закрытой группы. Если хостинг не имеет доступа к Telegram, задайте `CONTACT_RELAY_URL` и `CONTACT_RELAY_SECRET`: тогда Telegram credentials нужны только на relay-хосте. Никогда не задавайте `CONTACT_RELAY_URL` на самом relay-хосте, иначе конфигурация потеряет прямой Telegram fallback. `NEXT_PUBLIC_SITE_URL` должен содержать публичный URL после деплоя; локальный fallback — `http://localhost:3000`.
+   Публичная форма отправляет заявки напрямую в Web3Forms и не зависит от SMTP, Telegram или исходящих соединений VPS. `NEXT_PUBLIC_SITE_URL` должен содержать публичный URL после деплоя; локальный fallback — `http://localhost:3000`.
 
 3. Запустите dev-сервер:
 
@@ -47,11 +45,11 @@ npm run build
 
 Проект можно развернуть на Node.js-платформе с поддержкой Next.js. До публикации:
 
-- задайте в окружении хостинга прямые Telegram-переменные либо пару relay-переменных из `.env.example`, а также канонический `NEXT_PUBLIC_SITE_URL`;
+- задайте в окружении хостинга канонический `NEXT_PUBLIC_SITE_URL`, каталог данных и секрет сессии;
 - замените демонстрационные контакты в `data/site.ts`;
 - выполните все команды из раздела «Проверка»;
 - для self-hosted-запуска выполните `npm run build`, затем `npm run start`.
 
-### Защита публичной формы
+### Публичная форма
 
-API формы принимает только same-origin JSON-запросы размером до 16 KiB и применяет локальный скользящий лимит: 5 принятых попыток за 10 минут для первого адреса в `x-forwarded-for` (или ключа `unknown`). Лимитер намеренно ограничен по памяти, но его состояние существует только внутри одного Node.js/serverless-инстанса и не обеспечивает глобальное ограничение между инстансами. Перед production-запуском обязательно настройте эквивалентный rate limit на edge/provider-уровне.
+Форма на главной странице и странице персонала проверяет данные в браузере и отправляет их напрямую в Web3Forms. Form Access Key является публичным идентификатором формы; он не предоставляет доступ к почте или панели управления. Старый серверный `/api/contact` сохранён как резервный маршрут, но публичная форма его не вызывает.

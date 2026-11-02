@@ -14,15 +14,19 @@ NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://eventcrw.com
 EVENT_CREW_DATA_DIR=/var/lib/event-crew
 SESSION_SECRET=СЛУЧАЙНАЯ_СТРОКА_НЕ_КОРОЧЕ_64_СИМВОЛОВ
-CONTACT_RELAY_URL=https://magical-stroopwafel-621e60.netlify.app/api/contact/relay
-CONTACT_RELAY_SECRET=ОДИНАКОВЫЙ_СЕКРЕТ_НА_VPS_И_NETLIFY
 ```
 
-Создать `SESSION_SECRET` и отдельный `CONTACT_RELAY_SECRET` можно командой `openssl rand -hex 64`. Telegram-токен нельзя отправлять в чат, добавлять в Git или указывать в клиентском коде. Файл должен принадлежать `eventcrew:eventcrew` и иметь права `600`. Пароль администратора в `.env.local` не хранится.
+Создать `SESSION_SECRET` можно командой `openssl rand -hex 64`. Файл должен принадлежать `eventcrew:eventcrew` и иметь права `600`. Пароль администратора в `.env.local` не хранится.
 
-## Netlify-шлюз для заявок
+## Приём заявок через Web3Forms
 
-REG.RU VPS не имеет сетевого доступа к Telegram, поэтому production использует защищённый Netlify endpoint. В Netlify для сайта `magical-stroopwafel-621e60` добавьте Environment Variables:
+Публичная форма отправляет заявки из браузера напрямую в Web3Forms, поэтому SMTP, Telegram и Netlify-шлюз для её работы не нужны. Заявки приходят на подтверждённый адрес `eventcrew@bk.ru`. Form Access Key публичен по модели Web3Forms и не предоставляет доступ к почте или кабинету.
+
+После публикации отправьте одну тестовую заявку с `https://eventcrw.com` и проверьте папки «Входящие» и «Спам». Управление формой и статистика доступны в кабинете Web3Forms.
+
+## Резервный серверный маршрут (публичной формой не используется)
+
+Старый `/api/contact` и защищённый Netlify endpoint сохранены в коде как резерв. Если их потребуется включить отдельно, в Netlify для сайта `magical-stroopwafel-621e60` добавьте Environment Variables:
 
 ```dotenv
 TELEGRAM_BOT_TOKEN=ТОКЕН_ОТ_BOTFATHER
