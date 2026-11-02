@@ -14,15 +14,49 @@ NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://eventcrw.com
 EVENT_CREW_DATA_DIR=/var/lib/event-crew
 SESSION_SECRET=СЛУЧАЙНАЯ_СТРОКА_НЕ_КОРОЧЕ_64_СИМВОЛОВ
-SMTP_HOST=smtp.mail.ru
-SMTP_PORT=465
-SMTP_SECURE=true
-SMTP_USER=eventcrew@bk.ru
-SMTP_PASSWORD=ПАРОЛЬ_ПРИЛОЖЕНИЯ_ПОЧТЫ
-CONTACT_RECIPIENT_EMAIL=eventcrew@bk.ru
+TELEGRAM_BOT_TOKEN=ТОКЕН_ОТ_BOTFATHER
+TELEGRAM_CHAT_ID=-1001234567890
 ```
 
-Создать секрет можно командой `openssl rand -hex 64`. Для SMTP используйте отдельный пароль приложения почты. Файл должен принадлежать `eventcrew:eventcrew` и иметь права `600`. Пароль администратора в `.env.local` не хранится.
+Создать `SESSION_SECRET` можно командой `openssl rand -hex 64`. Telegram-токен нельзя отправлять в чат, добавлять в Git или указывать в клиентском коде. Файл должен принадлежать `eventcrew:eventcrew` и иметь права `600`. Пароль администратора в `.env.local` не хранится.
+
+## Подключение группы для заявок
+
+Создайте бота через официальный `@BotFather`, добавьте его в закрытую группу и отправьте в группе `/start`. Затем выполните на сервере блок ниже. Токен вводится скрыто и не сохраняется в истории команд; ID группы определяется из последнего обновления Telegram:
+
+```bash
+cd /var/www/event-crew
+
+read -rsp 'Вставьте токен Telegram-бота: ' TELEGRAM_BOT_TOKEN
+printf '\n'
+
+TELEGRAM_CHAT_ID=$(curl -fsS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates" | python3 -c '
+import json, sys
+updates = json.load(sys.stdin).get("result", [])
+for update in reversed(updates):
+    event = update.get("message") or update.get("channel_post") or update.get("my_chat_member")
+    chat = event.get("chat", {}) if event else {}
+    if chat.get("type") in {"group", "supergroup"}:
+        print(chat["id"])
+        break
+')
+
+if [ -z "$TELEGRAM_CHAT_ID" ]; then
+  echo 'ID группы не найден. Напишите /start в группе и повторите блок.'
+  unset TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID
+  exit 1
+fi
+
+sed -i '/^TELEGRAM_BOT_TOKEN=/d;/^TELEGRAM_CHAT_ID=/d;/^SMTP_/d;/^CONTACT_RECIPIENT_EMAIL=/d' .env.local
+printf '\nTELEGRAM_BOT_TOKEN=%s\nTELEGRAM_CHAT_ID=%s\n' "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" >> .env.local
+chown eventcrew:eventcrew .env.local
+chmod 600 .env.local
+
+echo "Группа найдена, ID: $TELEGRAM_CHAT_ID"
+unset TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID
+```
+
+После обновления кода, сборки и перезапуска сервиса отправьте тестовую заявку с сайта. При успешной настройке она появится в закрытой группе.
 
 Nginx должен перезаписывать клиентский адрес и разрешать общий multipart-запрос до 50 МБ (каждый файл приложение всё равно ограничивает 12 МБ):
 
