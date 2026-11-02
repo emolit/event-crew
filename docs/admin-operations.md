@@ -14,49 +14,43 @@ NODE_ENV=production
 NEXT_PUBLIC_SITE_URL=https://eventcrw.com
 EVENT_CREW_DATA_DIR=/var/lib/event-crew
 SESSION_SECRET=СЛУЧАЙНАЯ_СТРОКА_НЕ_КОРОЧЕ_64_СИМВОЛОВ
-TELEGRAM_BOT_TOKEN=ТОКЕН_ОТ_BOTFATHER
-TELEGRAM_CHAT_ID=-1001234567890
+CONTACT_RELAY_URL=https://magical-stroopwafel-621e60.netlify.app/api/contact/relay
+CONTACT_RELAY_SECRET=ОДИНАКОВЫЙ_СЕКРЕТ_НА_VPS_И_NETLIFY
 ```
 
-Создать `SESSION_SECRET` можно командой `openssl rand -hex 64`. Telegram-токен нельзя отправлять в чат, добавлять в Git или указывать в клиентском коде. Файл должен принадлежать `eventcrew:eventcrew` и иметь права `600`. Пароль администратора в `.env.local` не хранится.
+Создать `SESSION_SECRET` и отдельный `CONTACT_RELAY_SECRET` можно командой `openssl rand -hex 64`. Telegram-токен нельзя отправлять в чат, добавлять в Git или указывать в клиентском коде. Файл должен принадлежать `eventcrew:eventcrew` и иметь права `600`. Пароль администратора в `.env.local` не хранится.
 
-## Подключение группы для заявок
+## Netlify-шлюз для заявок
 
-Создайте бота через официальный `@BotFather`, добавьте его в закрытую группу и отправьте в группе `/start`. Затем выполните на сервере блок ниже. Токен вводится скрыто и не сохраняется в истории команд; ID группы определяется из последнего обновления Telegram:
+REG.RU VPS не имеет сетевого доступа к Telegram, поэтому production использует защищённый Netlify endpoint. В Netlify для сайта `magical-stroopwafel-621e60` добавьте Environment Variables:
+
+```dotenv
+TELEGRAM_BOT_TOKEN=ТОКЕН_ОТ_BOTFATHER
+TELEGRAM_CHAT_ID=-1001234567890
+CONTACT_RELAY_SECRET=ОДИНАКОВЫЙ_СЛУЧАЙНЫЙ_СЕКРЕТ
+```
+
+На Netlify не задавайте `CONTACT_RELAY_URL`: endpoint должен обращаться к Telegram напрямую. После изменения переменных запустите новый deploy.
+
+ID группы получите через Bot API с компьютера, где доступен Telegram: добавьте бота в закрытую группу, отправьте `/start@имя_бота`, вызовите `getUpdates` и возьмите отрицательное значение `message.chat.id` или `my_chat_member.chat.id`. Токен не публикуйте и не передавайте в переписке.
+
+На VPS сохраните URL и тот же relay secret, удалив неиспользуемые Telegram/SMTP credentials:
 
 ```bash
 cd /var/www/event-crew
 
-read -rsp 'Вставьте токен Telegram-бота: ' TELEGRAM_BOT_TOKEN
+read -rsp 'Вставьте CONTACT_RELAY_SECRET из Netlify: ' CONTACT_RELAY_SECRET
 printf '\n'
-
-TELEGRAM_CHAT_ID=$(curl -fsS "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates" | python3 -c '
-import json, sys
-updates = json.load(sys.stdin).get("result", [])
-for update in reversed(updates):
-    event = update.get("message") or update.get("channel_post") or update.get("my_chat_member")
-    chat = event.get("chat", {}) if event else {}
-    if chat.get("type") in {"group", "supergroup"}:
-        print(chat["id"])
-        break
-')
-
-if [ -z "$TELEGRAM_CHAT_ID" ]; then
-  echo 'ID группы не найден. Напишите /start в группе и повторите блок.'
-  unset TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID
-  exit 1
-fi
-
-sed -i '/^TELEGRAM_BOT_TOKEN=/d;/^TELEGRAM_CHAT_ID=/d;/^SMTP_/d;/^CONTACT_RECIPIENT_EMAIL=/d' .env.local
-printf '\nTELEGRAM_BOT_TOKEN=%s\nTELEGRAM_CHAT_ID=%s\n' "$TELEGRAM_BOT_TOKEN" "$TELEGRAM_CHAT_ID" >> .env.local
+sed -i '/^CONTACT_RELAY_URL=/d;/^CONTACT_RELAY_SECRET=/d;/^TELEGRAM_/d;/^SMTP_/d;/^CONTACT_RECIPIENT_EMAIL=/d' .env.local
+printf '\nCONTACT_RELAY_URL=%s\nCONTACT_RELAY_SECRET=%s\n' \
+  'https://magical-stroopwafel-621e60.netlify.app/api/contact/relay' \
+  "$CONTACT_RELAY_SECRET" >> .env.local
 chown eventcrew:eventcrew .env.local
 chmod 600 .env.local
-
-echo "Группа найдена, ID: $TELEGRAM_CHAT_ID"
-unset TELEGRAM_BOT_TOKEN TELEGRAM_CHAT_ID
+unset CONTACT_RELAY_SECRET
 ```
 
-После обновления кода, сборки и перезапуска сервиса отправьте тестовую заявку с сайта. При успешной настройке она появится в закрытой группе.
+Relay endpoint принимает только `POST` с правильным Bearer secret, повторно проверяет тело заявки и не раскрывает Telegram credentials. После обновления кода, сборки и перезапуска VPS отправьте тестовую заявку с сайта; она должна появиться в закрытой группе.
 
 Nginx должен перезаписывать клиентский адрес и разрешать общий multipart-запрос до 50 МБ (каждый файл приложение всё равно ограничивает 12 МБ):
 

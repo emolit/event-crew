@@ -15,10 +15,12 @@
    ```dotenv
    TELEGRAM_BOT_TOKEN=replace-with-bot-token
    TELEGRAM_CHAT_ID=-1001234567890
+   CONTACT_RELAY_URL=
+   CONTACT_RELAY_SECRET=
    NEXT_PUBLIC_SITE_URL=http://localhost:3000
    ```
 
-   `TELEGRAM_BOT_TOKEN` выдаёт официальный `@BotFather`. `TELEGRAM_CHAT_ID` — строковый ID закрытой группы, обычно начинающийся с `-100`. Оба значения обязательны и доступны только серверу. `NEXT_PUBLIC_SITE_URL` должен содержать публичный URL после деплоя; локальный fallback — `http://localhost:3000`.
+   Без `CONTACT_RELAY_URL` заявки отправляются напрямую: обязательны `TELEGRAM_BOT_TOKEN` от `@BotFather` и строковый `TELEGRAM_CHAT_ID` закрытой группы. Если хостинг не имеет доступа к Telegram, задайте `CONTACT_RELAY_URL` и `CONTACT_RELAY_SECRET`: тогда Telegram credentials нужны только на relay-хосте. Никогда не задавайте `CONTACT_RELAY_URL` на самом relay-хосте, иначе конфигурация потеряет прямой Telegram fallback. `NEXT_PUBLIC_SITE_URL` должен содержать публичный URL после деплоя; локальный fallback — `http://localhost:3000`.
 
 3. Запустите dev-сервер:
 
@@ -45,7 +47,7 @@ npm run build
 
 Проект можно развернуть на Node.js-платформе с поддержкой Next.js. До публикации:
 
-- задайте в окружении хостинга Telegram-переменные из `.env.example` и канонический `NEXT_PUBLIC_SITE_URL`;
+- задайте в окружении хостинга прямые Telegram-переменные либо пару relay-переменных из `.env.example`, а также канонический `NEXT_PUBLIC_SITE_URL`;
 - замените демонстрационные контакты в `data/site.ts`;
 - выполните все команды из раздела «Проверка»;
 - для self-hosted-запуска выполните `npm run build`, затем `npm run start`.
