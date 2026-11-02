@@ -1,4 +1,5 @@
 import { contactSchema } from "@/lib/contact-schema";
+import { sendApplicationRelay } from "@/lib/contact-relay";
 import { contactRateLimiter } from "@/lib/rate-limit";
 import { sendApplicationTelegram } from "@/lib/telegram";
 
@@ -54,9 +55,24 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ ok: false, error: "VALIDATION_ERROR" }, { status: 400 });
   }
 
+  const relayUrl = process.env.CONTACT_RELAY_URL?.trim();
+  if (relayUrl) {
+    const relaySecret = process.env.CONTACT_RELAY_SECRET?.trim();
+    if (!relaySecret) {
+      return Response.json({ ok: false, error: "CONFIGURATION_ERROR" }, { status: 500 });
+    }
+
+    try {
+      await sendApplicationRelay(parsed.data, { url: relayUrl, secret: relaySecret });
+    } catch {
+      return Response.json({ ok: false, error: "DELIVERY_ERROR" }, { status: 502 });
+    }
+
+    return Response.json({ ok: true });
+  }
+
   const token = process.env.TELEGRAM_BOT_TOKEN?.trim();
   const chatId = process.env.TELEGRAM_CHAT_ID?.trim();
-
   if (!token || !chatId) {
     return Response.json({ ok: false, error: "CONFIGURATION_ERROR" }, { status: 500 });
   }

@@ -1,12 +1,17 @@
 import { sendApplicationTelegram } from "@/lib/telegram";
+import { sendApplicationRelay } from "@/lib/contact-relay";
 import { POST } from "@/app/api/contact/route";
 import { contactRateLimiter } from "@/lib/rate-limit";
 
 vi.mock("@/lib/telegram", () => ({
   sendApplicationTelegram: vi.fn(),
 }));
+vi.mock("@/lib/contact-relay", () => ({
+  sendApplicationRelay: vi.fn(),
+}));
 
 const sendApplicationTelegramMock = vi.mocked(sendApplicationTelegram);
+const sendApplicationRelayMock = vi.mocked(sendApplicationRelay);
 
 const payload = {
   name: "Иван",
@@ -37,12 +42,16 @@ beforeEach(() => {
   contactRateLimiter.clear();
   process.env.TELEGRAM_BOT_TOKEN = "bot-secret";
   process.env.TELEGRAM_CHAT_ID = "-1001234567890";
+  process.env.CONTACT_RELAY_SECRET = "relay-secret";
+  delete process.env.CONTACT_RELAY_URL;
   sendApplicationTelegramMock.mockResolvedValue(undefined);
+  sendApplicationRelayMock.mockResolvedValue(undefined);
 });
 
 afterEach(() => {
   process.env = { ...originalEnv };
   sendApplicationTelegramMock.mockReset();
+  sendApplicationRelayMock.mockReset();
 });
 
 it("returns 200 and sends a valid request", async () => {
@@ -57,6 +66,7 @@ it("returns 200 and sends a valid request", async () => {
       chatId: "-1001234567890",
     },
   );
+  expect(sendApplicationRelayMock).not.toHaveBeenCalled();
 });
 
 it("returns 415 unless the request media type is application/json", async () => {
@@ -197,6 +207,45 @@ it.each(["TELEGRAM_BOT_TOKEN", "TELEGRAM_CHAT_ID"])(
 
 it("returns 502 when Telegram delivery fails or times out", async () => {
   sendApplicationTelegramMock.mockRejectedValue(new Error("TELEGRAM_DELIVERY_FAILED"));
+
+  const response = await POST(createRequest(JSON.stringify(payload)));
+
+  expect(response.status).toBe(502);
+  await expect(response.json()).resolves.toEqual({ ok: false, error: "DELIVERY_ERROR" });
+});
+
+it("uses the configured relay instead of direct Telegram delivery", async () => {
+  process.env.CONTACT_RELAY_URL = "https://relay.example/api/contact/relay";
+
+  const response = await POST(createRequest(JSON.stringify(payload)));
+
+  expect(response.status).toBe(200);
+  await expect(response.json()).resolves.toEqual({ ok: true });
+  expect(sendApplicationRelayMock).toHaveBeenCalledWith(
+    { ...payload, quantity: 10 },
+    {
+      url: "https://relay.example/api/contact/relay",
+      secret: "relay-secret",
+    },
+  );
+  expect(sendApplicationTelegramMock).not.toHaveBeenCalled();
+});
+
+it("returns a configuration error when relay URL exists without a secret", async () => {
+  process.env.CONTACT_RELAY_URL = "https://relay.example/api/contact/relay";
+  delete process.env.CONTACT_RELAY_SECRET;
+
+  const response = await POST(createRequest(JSON.stringify(payload)));
+
+  expect(response.status).toBe(500);
+  await expect(response.json()).resolves.toEqual({ ok: false, error: "CONFIGURATION_ERROR" });
+  expect(sendApplicationRelayMock).not.toHaveBeenCalled();
+  expect(sendApplicationTelegramMock).not.toHaveBeenCalled();
+});
+
+it("returns 502 when relay delivery fails or times out", async () => {
+  process.env.CONTACT_RELAY_URL = "https://relay.example/api/contact/relay";
+  sendApplicationRelayMock.mockRejectedValue(new Error("RELAY_DELIVERY_FAILED relay-secret"));
 
   const response = await POST(createRequest(JSON.stringify(payload)));
 
